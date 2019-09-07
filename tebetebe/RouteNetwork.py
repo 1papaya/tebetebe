@@ -3,7 +3,6 @@
 import overpass
 import hashlib
 import logging
-import osmium
 
 from pathlib import Path
 
