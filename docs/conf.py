@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 project = 'tebetebe'
 copyright = '2019, 1papaya'
@@ -10,7 +13,10 @@ extensions = [
     'sphinx.ext.todo',
 ]
 
+templates_path = ['_templates']
 language = 'en'
+
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_static_path = ['_static']
+
 todo_include_todos = True
