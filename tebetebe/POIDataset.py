@@ -12,17 +12,16 @@ from . import defaults
 
 class POIDataset(GeoDataFrame):
     '''
-    Extension of a GeoDataFrame which stores only points, and which provides
-    a method to load from the Overpass API
+    Extension of a GeoDataFrame which stores only points, to be used as origin,
+    destination, and waypoints in routing.
 
     Parameters
     ----------
     name: str
-        Name of POIDataset
+        Name of POIDataset (required)
     '''
     def __init__(self, *args, name=None, **kwargs):
 
-        ## Set POIDataset name
         if name is None:
             raise ValueError("Must specify name for POIDataset")
         else:
@@ -35,36 +34,19 @@ class POIDataset(GeoDataFrame):
             self.crs = {'init': 'epsg:4326'}
 
     def set_name(self, name):
-        '''
-        Set name of POIDataset
-
-        Parameters
-        ----------
-        name : str
-            Name to set as POIDataset name
-        '''
+        '''Set POI dataset name'''
 
         if hasattr(self, "_metadata") and isinstance(self._metadata, dict):
             self._metadata["name"] = name
         else:
             self._metadata = {"name": name}
 
-    def get_name(self): return self._metadata["name"]
+    def get_name(self):
+        """Return POI dataset name"""
+        return self._metadata["name"]
 
     def _filter_points(self, gdf):
-        '''
-        Filter out any records in GeoDataFrame that are not Point geometries
-
-        Parameters
-        ----------
-        gdf : geopandas.GeoDataFrame
-            GeoDataFrame to be filtered
-
-        Returns
-        -------
-        geopandas.GeoDataFrame
-            Filtered GeoDataFrame
-        '''
+        '''Filter out any records in GeoDataFrame that are not Point geometries'''
 
         gdf_geom_types = gdf.apply(lambda r: r.geometry.type, axis=1)
         gdf_points = gdf[gdf_geom_types == "Point"]
@@ -74,7 +56,7 @@ class POIDataset(GeoDataFrame):
     @classmethod
     def from_overpass(cls, query, name=None, overwrite=False, tmp_dir=defaults.TMP_DIR, **kwargs):
         '''
-        Download overpass query, parse for nodes returned and return initialize POIDataset
+        Initialize POIDataset from Overpass API query
 
         Parameters
         ----------
@@ -86,10 +68,6 @@ class POIDataset(GeoDataFrame):
             Overwrite POIDataset if it already exists on disk
         tmp_dir : str
             Temporary directory to save POIDataset
-
-        Returns
-        -------
-        POIDataset
         '''
         
         logger = logging.getLogger(defaults.LOGGER)
@@ -146,45 +124,19 @@ class POIDataset(GeoDataFrame):
         return cls.from_features(pois.features, name=out_name, crs={'init': 'epsg:4326'})
 
     @classmethod
-    def from_file(cls, path, *args, name=None, **kwargs):
-        '''
-        Load POIDataset from file
+    def from_file(cls, path, name=None, **kwargs):
+        '''Initialize POIDataset from file'''
 
-        Parameters
-        ----------
-        path : str
-            Path of file to be loaded. Can be any OGR dataset that is readable by fiona/geopandas
-        name : str
-            Name of dataset
-
-        Returns
-        -------
-        POIDataset
-        '''
-
-        gdf = super(POIDataset, cls).from_file(path, *args, **kwargs)
+        gdf = super(POIDataset, cls).from_file(path, **kwargs)
         gdf_points = cls._filter_points(cls, gdf)
 
         return cls(gdf_points, name=name)
 
     @classmethod
-    def from_features(cls, features, *args, name=None, **kwargs):
-        '''
-        Load POIDataset from GeoJSON features
+    def from_features(cls, features, name=None, **kwargs):
+        '''Initialize POIDataset from GeoJSON features'''
 
-        Parameters
-        ----------
-        features : array of geojson.Feature
-            Features to convert into GeoDataFrame
-        name : str
-            Name of dataset
-
-        Returns
-        -------
-        POIDataset
-        '''
-
-        gdf = super(POIDataset, cls).from_features(features, *args, **kwargs)
+        gdf = super(POIDataset, cls).from_features(features, **kwargs)
         gdf_points = cls._filter_points(cls, gdf)
 
         return cls(gdf_points, name=name)

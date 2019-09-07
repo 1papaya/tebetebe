@@ -1,11 +1,3 @@
-tb.POIDataset
---------------------------
-
-.. automodule:: tebetebe.POIDataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tb.RouteNetwork
 ----------------------------
 
@@ -26,6 +18,14 @@ tb.Scenario
 ------------------------
 
 .. automodule:: tebetebe.Scenario
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tb.POIDataset
+--------------------------
+
+.. automodule:: tebetebe.POIDataset
    :members:
    :undoc-members:
    :show-inheritance:

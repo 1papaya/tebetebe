@@ -78,15 +78,8 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html">tb.POIDataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.Scenario">tb.Scenario</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.Environment">tb.Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.OSRM">tb.OSRM</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -157,9 +150,11 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 
-<div class="viewcode-block" id="OSRM"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM">[docs]</a><span class="k">class</span> <span class="nc">OSRM</span><span class="p">():</span>
+<div class="viewcode-block" id="OSRM"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM">[docs]</a><span class="k">class</span> <span class="nc">OSRM</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class wrapper around all the osrm-* executables</span>
+<span class="sd">    Base class wrapper around all the osrm-* binaries. All functions accept</span>
+<span class="sd">    additional **kwargs to be passed upon execution. This class is used in</span>
+<span class="sd">    the background and need not be initialized directly.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -186,49 +181,23 @@
         <span class="k">except</span> <span class="n">CommandNotFound</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;OSRM binary not found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
 
-<div class="viewcode-block" id="OSRM.extract"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osm_file</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="OSRM.extract"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osm_path</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Call osrm-extract</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        osm_file : str</span>
-<span class="sd">            Path to *.osm{.pbf} file</span>
-<span class="sd">        profile : str</span>
-<span class="sd">            Path to *.lua file</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Any additional parameters to be passed to osrm-extract</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sh.RunningCommand</span>
+<span class="sd">        Call `osrm-extract` with a path to the osm route network and lua profile. </span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_bg&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="kc">None</span><span class="p">}</span>
 
-        <span class="n">proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_osrm_extract</span><span class="p">(</span><span class="n">osm_file</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">defaults</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_osrm_extract</span><span class="p">(</span><span class="n">osm_path</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">defaults</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_cmd</span><span class="p">(</span><span class="n">proc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proc</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">proc</span></div>
 
-<div class="viewcode-block" id="OSRM.partition"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.partition">[docs]</a>    <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Call osrm-partition</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        osrm_file : str</span>
-<span class="sd">            Path to *.osrm</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Any additional parameters to be passed to osrm-partition</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sh.RunningCommand</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OSRM.partition"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.partition">[docs]</a>    <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Call `osrm-partition` for a .osrm file&#39;&#39;&#39;</span>
       
         <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_bg&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="kc">None</span><span class="p">}</span>
@@ -240,21 +209,8 @@
 
         <span class="k">return</span> <span class="n">proc</span></div>
 
-<div class="viewcode-block" id="OSRM.customize"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.customize">[docs]</a>    <span class="k">def</span> <span class="nf">customize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Call osrm-customize</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        osrm_file : str</span>
-<span class="sd">            Path to *.osrm</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Any additional parameters to be passed to osrm-customize</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sh.RunningCommand</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OSRM.customize"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.customize">[docs]</a>    <span class="k">def</span> <span class="nf">customize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Call `osrm-customize` on a .osrm file&#39;&#39;&#39;</span>
       
         <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_bg&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="kc">None</span><span class="p">}</span>
@@ -266,21 +222,8 @@
 
         <span class="k">return</span> <span class="n">proc</span></div>
 
-<div class="viewcode-block" id="OSRM.contract"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.contract">[docs]</a>    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Call osrm-contract</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        osrm_file : str</span>
-<span class="sd">            Path to *.osrm</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Any additional parameters to be passed to osrm-contract</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sh.RunningCommand</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OSRM.contract"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.contract">[docs]</a>    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Call `osrm-contract` on a .osrm file&#39;&#39;&#39;</span>
 
         <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_bg&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="kc">None</span><span class="p">}</span>
@@ -292,9 +235,9 @@
 
         <span class="k">return</span> <span class="n">proc</span></div>
 
-<div class="viewcode-block" id="OSRM.routed"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.routed">[docs]</a>    <span class="k">def</span> <span class="nf">routed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="n">ready_callback</span><span class="p">,</span> <span class="n">done_callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="OSRM.routed"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.routed">[docs]</a>    <span class="k">def</span> <span class="nf">routed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osrm_file</span><span class="p">,</span> <span class="n">ready_callback</span><span class="p">,</span> <span class="n">done_callback</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Call osrm-routed</span>
+<span class="sd">        Call `osrm-routed` on a .osrm file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -304,29 +247,28 @@
 <span class="sd">            Function to be called when osrm-routed is ready for HTTP requests</span>
 <span class="sd">        done_callback : function</span>
 <span class="sd">            Function to be called when osrm-routed has exited</span>
+<span class="sd">        verbose : bool</span>
+<span class="sd">            `osrm-routed` output is so verbose it is default off even if the parent class `verbose=True`. Set this to true if you want to see `osrm-routed` output anyway.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Any additional parameters to be passed to osrm-routed</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        sh.RunningCommand</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        osrm-routed stdout output will not be echoed even with verbose=True, because</span>
-<span class="sd">        the INFO verbosity for osrm-routed includes every single HTTP request (*ton*</span>
-<span class="sd">        of output)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="c1">## Parse OSRM output line by line and wait til server is running to call callback</span>
-        <span class="k">def</span> <span class="nf">parse_output</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">stdin</span><span class="p">,</span> <span class="n">process</span><span class="p">):</span>
+        <span class="c1">## Parse OSRM output line by line and exec callback when server is running</span>
+        <span class="k">def</span> <span class="nf">parse_out</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">stdin</span><span class="p">,</span> <span class="n">process</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;running and waiting for requests&quot;</span><span class="p">):</span>
                 <span class="n">ready_callback</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="kc">True</span> <span class="c1">## Returning True stops executing this function each line</span>
+
+        <span class="k">def</span> <span class="nf">parse_out_verbose</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">stdin</span><span class="p">,</span> <span class="n">process</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;running and waiting for requests&quot;</span><span class="p">):</span>
+                <span class="n">ready_callback</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
         <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_bg&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;_bg_exc&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                     <span class="s2">&quot;verbosity&quot;</span><span class="p">:</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">parse_output</span><span class="p">,</span> <span class="s2">&quot;_done&quot;</span><span class="p">:</span> <span class="n">done_callback</span><span class="p">}</span>
+                    <span class="s2">&quot;_out&quot;</span><span class="p">:</span> <span class="n">parse_out_verbose</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">parse_output</span><span class="p">,</span>
+                    <span class="s2">&quot;_done&quot;</span><span class="p">:</span> <span class="n">done_callback</span><span class="p">}</span>
 
         <span class="n">proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_osrm_routed</span><span class="p">(</span><span class="n">osrm_file</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">defaults</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
 
@@ -335,26 +277,12 @@
 
         <span class="k">return</span> <span class="n">proc</span></div>
 
-<div class="viewcode-block" id="OSRM.get_version"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.OSRM.OSRM.get_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Get version of osrm</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        str</span>
-<span class="sd">            OSRM version</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OSRM.get_version"><a class="viewcode-back" href="../../index.html#tebetebe.OSRM.OSRM.get_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return OSRM binaries version&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_osrm_extract</span><span class="p">(</span><span class="s2">&quot;--version&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_log_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proc</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Log command text in a debug log output</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        proc : sh.RunningCommand</span>
-<span class="sd">            Process to output command text</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Log command text in a debug log output&#39;&#39;&#39;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">proc</span><span class="o">.</span><span class="n">cmd</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Executing: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd</span><span class="p">))</span>

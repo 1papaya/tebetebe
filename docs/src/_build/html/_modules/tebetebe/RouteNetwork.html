@@ -78,15 +78,8 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html">tb.POIDataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.Scenario">tb.Scenario</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.Environment">tb.Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tebetebe.html#module-tebetebe.OSRM">tb.OSRM</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -159,9 +152,9 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">hash_</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 
-<div class="viewcode-block" id="RouteNetwork"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RouteNetwork.RouteNetwork">[docs]</a><span class="k">class</span> <span class="nc">RouteNetwork</span><span class="p">():</span>
+<div class="viewcode-block" id="RouteNetwork"><a class="viewcode-back" href="../../index.html#tebetebe.RouteNetwork.RouteNetwork">[docs]</a><span class="k">class</span> <span class="nc">RouteNetwork</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    OSM file to be used as a route network. Can be a file or initialized from an Overpass query</span>
+<span class="sd">    .osm file from which a route network will be extracted</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -183,13 +176,18 @@
         <span class="c1">## Set profile name to filename if not specified</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="RouteNetwork.get_name"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RouteNetwork.RouteNetwork.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
-<div class="viewcode-block" id="RouteNetwork.get_path"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RouteNetwork.RouteNetwork.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
+<div class="viewcode-block" id="RouteNetwork.get_name"><a class="viewcode-back" href="../../index.html#tebetebe.RouteNetwork.RouteNetwork.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return route network name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-<div class="viewcode-block" id="RouteNetwork.from_overpass"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RouteNetwork.RouteNetwork.from_overpass">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RouteNetwork.get_path"><a class="viewcode-back" href="../../index.html#tebetebe.RouteNetwork.RouteNetwork.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return route network path&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
+
+<div class="viewcode-block" id="RouteNetwork.from_overpass"><a class="viewcode-back" href="../../index.html#tebetebe.RouteNetwork.RouteNetwork.from_overpass">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_overpass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="n">defaults</span><span class="o">.</span><span class="n">TMP_DIR</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Download result of overpass query, save as .osm, and return initialized RouteNetwork</span>
+<span class="sd">        Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

@@ -8,6 +8,11 @@ author = '1papaya'
 
 html_theme = "sphinx_rtd_theme"
 
+html_theme_options = {
+    'collapse_navigation': False,
+    'navigation_depth': 7,
+}
+
 extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',

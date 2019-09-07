@@ -11,7 +11,7 @@ from . import defaults
 
 class RouteNetwork():
     '''
-    OSM file to be used as a route network. Can be a file or initialized from an Overpass query
+    .osm file from which a route network will be extracted
 
     Parameters
     ----------
@@ -33,13 +33,18 @@ class RouteNetwork():
         ## Set profile name to filename if not specified
         self.name = name if name else self.path.stem.split(".")[0]
 
-    def get_name(self): return self.name
-    def get_path(self): return self.path
+    def get_name(self):
+        """Return route network name"""
+        return self.name
+
+    def get_path(self):
+        """Return route network path"""
+        return self.path
 
     @classmethod
     def from_overpass(cls, query, name=None, overwrite=False, tmp_dir=defaults.TMP_DIR, **kwargs):
         '''
-        Download result of overpass query, save as .osm, and return initialized RouteNetwork
+        Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm
 
         Parameters
         ----------

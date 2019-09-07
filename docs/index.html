@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tebetebe API Reference &mdash; tebetebe  documentation</title>
+  <title>Introduction &mdash; tebetebe  documentation</title>
   
 
   
@@ -34,8 +34,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="tb.POIDataset" href="tebetebe.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -79,15 +78,25 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html">tb.POIDataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.Scenario">tb.Scenario</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.Environment">tb.Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.OSRM">tb.OSRM</a></li>
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Introduction</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#sko-buffs">Sko Buffs</a></li>
+<li><a class="reference internal" href="#yebo">Yebo</a></li>
 </ul>
-
+</li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li><a class="reference internal" href="#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
+<li><a class="reference internal" href="#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
+<li><a class="reference internal" href="#module-tebetebe.Scenario">tb.Scenario</a></li>
+<li><a class="reference internal" href="#module-tebetebe.POIDataset">tb.POIDataset</a></li>
+<li><a class="reference internal" href="#module-tebetebe.Environment">tb.Environment</a></li>
+<li><a class="reference internal" href="#module-tebetebe.OSRM">tb.OSRM</a></li>
+</ul>
+</li>
+</ul>
+</div>
             
           
         </div>
@@ -131,7 +140,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>tebetebe API Reference</li>
+      <li>Introduction</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -150,17 +159,500 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tebetebe-api-reference">
-<h1>tebetebe API Reference<a class="headerlink" href="#tebetebe-api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html">tb.POIDataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.Scenario">tb.Scenario</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.Environment">tb.Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tebetebe.html#module-tebetebe.OSRM">tb.OSRM</a></li>
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="sko-buffs">
+<h2>Sko Buffs<a class="headerlink" href="#sko-buffs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="yebo">
+<h2>Yebo<a class="headerlink" href="#yebo" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-tebetebe.RouteNetwork">
+<span id="tb-routenetwork"></span><h2>tb.RouteNetwork<a class="headerlink" href="#module-tebetebe.RouteNetwork" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.RouteNetwork.RouteNetwork">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>.osm file from which a route network will be extracted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to <a href="#id1"><span class="problematic" id="id2">*</span></a>.osm{.pbf} dataset</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of OSMDataset</p></li>
 </ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.from_overpass">
+<em class="property">classmethod </em><code class="sig-name descname">from_overpass</code><span class="sig-paren">(</span><em class="sig-param">query</em>, <em class="sig-param">name=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.from_overpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.from_overpass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query <em>must</em> output in XML! (eg. [out:xml];)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the route network</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite route network if it already exists on disk</p></li>
+<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save route network</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>OSMDataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return route network name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return route network path</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tebetebe.RoutingProfile">
+<span id="tb-routingprofile"></span><h2>tb.RoutingProfile<a class="headerlink" href="#module-tebetebe.RoutingProfile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.RoutingProfile.RoutingProfile">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>RoutingProfile is a .lua file with directives on how to turn a RouteNetwork
+into a routable OSRM file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename will be used.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.RoutingProfile.RoutingProfile.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of routing profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RoutingProfile.RoutingProfile.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path of routing profile</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tebetebe.Scenario">
+<span id="tb-scenario"></span><h2>tb.Scenario<a class="headerlink" href="#module-tebetebe.Scenario" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.Scenario.Scenario">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.Scenario.</code><code class="sig-name descname">Scenario</code><span class="sig-paren">(</span><em class="sig-param">route_network</em>, <em class="sig-param">routing_profile</em>, <em class="sig-param">name=None</em>, <em class="sig-param">algorithm='MLD'</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Scenario is an abstraction of the OSRM binaries in order to dissolve a
+route network and routing profile into a routable OSRM file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>route_network</strong> (<em>str / RouteNetwork</em>) – Route network to be used in scenario</p></li>
+<li><p><strong>routing_profile</strong> (<em>str / RoutingProfile</em>) – Routing profile to be used in scenario</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Scenario name used in output file and log entries. If not supplied, it will be built based upon the route network &amp; routing profile names</p></li>
+<li><p><strong>algorithm</strong> (<em>str</em>) – Algorithm to be used (either “CH” or “MLD”)</p></li>
+<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to store files generated by osrm binaries</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite scenario if .osrm* files already exist. Otherwise, the existing .osrm* files will be used.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Print output of OSRM compilation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.Scenario.Scenario.compile">
+<code class="sig-name descname">compile</code><span class="sig-paren">(</span><em class="sig-param">extract_args={}</em>, <em class="sig-param">contract_args={}</em>, <em class="sig-param">partition_args={}</em>, <em class="sig-param">customize_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile route network and routing profile into a routable OSRM file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>extract_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-extract</p></li>
+<li><p><strong>contract_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-contract (algorithm=”CH” only)</p></li>
+<li><p><strong>partition_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-partition (algorithm=”MLD” only)</p></li>
+<li><p><strong>customize_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-customize (algorithm=”MLD” only)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.Scenario.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Scenario name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.Scenario.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Scenario Path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.Scenario.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a Scenario and return ScenarioAPI</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Any additional parameters to be passed to osrm-routed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#tebetebe.Scenario.ScenarioAPI" title="tebetebe.Scenario.ScenarioAPI">ScenarioAPI</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tebetebe.Scenario.ScenarioAPI">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.Scenario.</code><code class="sig-name descname">ScenarioAPI</code><span class="sig-paren">(</span><em class="sig-param">scenario</em>, <em class="sig-param">call_opts={}</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#ScenarioAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.AbstractContextManager</span></code></p>
+<p>ScenarioAPI is a context manager for the execution of the <cite>osrm-routed</cite> HTTP server,
+and provides a low-level API for querying that server</p>
+<p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
+<li><p><strong>call_opts</strong> (<em>dict</em>) – Any additional parameters to be passed to osrm-routed</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.is_alive">
+<code class="sig-name descname">is_alive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#ScenarioAPI.is_alive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.is_alive" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if Scenario process is running, False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.match">
+<code class="sig-name descname">match</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">timestamps=None</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">gaps='split'</em>, <em class="sig-param">tidy=False</em>, <em class="sig-param">waypoints=None</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapping OSRM ‘match’ function, returning the reponse in JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>list of tuple/list of point</em>) – A sequence of points as (x ,y) where x is longitude and y is latitude.</p></li>
+<li><p><strong>steps</strong> (<em>bool</em><em>, </em><em>optional</em>) – Default is False.</p></li>
+<li><p><strong>overview</strong> (<em>str</em><em>, </em><em>optional</em>) – Query for the geometry overview, either “simplified”, “full” or “false”
+(Default: “simplified”)</p></li>
+<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Format in which decode the geometry, either “polyline” (ie. not decoded),
+“geojson”, “WKT” or “WKB” (default: “polyline”).</p></li>
+<li><p><strong>timestamps</strong> (<em>list of timestamp</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>radius</strong> (<em>list of float</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>annotations</strong> (<em>bool</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>gaps</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>tidy</strong> (<em>bool</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>waypoints</strong> (<em>list of tuple/list of point</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>url_config</strong> (<em>osrm.RequestConfig</em><em>, </em><em>optional</em>) – Parameters regarding the host, version and profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response from the osrm instance, parsed as a dict</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.nearest">
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">number=1</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.nearest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Useless function wrapping OSRM ‘nearest’ function,
+returning the reponse in JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord</strong> (<em>list/tuple of two floats</em>) – (x ,y) where x is longitude and y is latitude</p></li>
+<li><p><strong>number</strong> (<em>int</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>url_config</strong> (<em>osrm.RequestConfig</em><em>, </em><em>optional</em>) – Parameters regarding the host, version and profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – The response from the osrm instance, parsed as a dict</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.simple_route">
+<code class="sig-name descname">simple_route</code><span class="sig-paren">(</span><em class="sig-param">coord_dest</em>, <em class="sig-param">coord_intermediate=None</em>, <em class="sig-param">alternatives=False</em>, <em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">annotations='true'</em>, <em class="sig-param">continue_straight='default'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.simple_route" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapping OSRM ‘viaroute’ function and returning the JSON reponse
+with the route_geometry decoded (in WKT or WKB) if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord_origin</strong> (<em>list/tuple of two floats</em>) – (x ,y) where x is longitude and y is latitude</p></li>
+<li><p><strong>coord_dest</strong> (<em>list/tuple of two floats</em>) – (x ,y) where x is longitude and y is latitude</p></li>
+<li><p><strong>coord_intermediate</strong> (<em>list of 2-floats list/tuple</em>) – [(x ,y), (x, y), …] where x is longitude and y is latitude</p></li>
+<li><p><strong>alternatives</strong> (<em>bool</em><em>, </em><em>optional</em>) – Query (and resolve geometry if asked) for alternatives routes
+(default: False)</p></li>
+<li><p><strong>output</strong> (<em>str</em><em>, </em><em>optional</em>) – Define the type of output (full response or only route(s)), default : “full”.</p></li>
+<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Format in which decode the geometry, either “polyline” (ie. not decoded),
+“geojson”, “WKT” or “WKB” (default: “polyline”).</p></li>
+<li><p><strong>annotations</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>continue_straight</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>overview</strong> (<em>str</em><em>, </em><em>optional</em>) – Query for the geometry overview, either “simplified”, “full” or “false”
+(Default: “simplified”)</p></li>
+<li><p><strong>url_config</strong> (<em>osrm.RequestConfig</em><em>, </em><em>optional</em>) – Parameters regarding the host, version and profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – The result, parsed as a dict, with the geometry decoded in the format
+defined in <cite>geometry</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.table">
+<code class="sig-name descname">table</code><span class="sig-paren">(</span><em class="sig-param">coords_dest=None</em>, <em class="sig-param">ids_origin=None</em>, <em class="sig-param">ids_dest=None</em>, <em class="sig-param">output='np'</em>, <em class="sig-param">minutes=False</em>, <em class="sig-param">annotations='duration'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapping OSRM ‘table’ function in order to get a matrix of
+time distance as a numpy array or as a DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords_src</strong> (<em>list</em>) – <dl class="simple">
+<dt>A list of coord as (longitude, latitude) , like :</dt><dd><dl class="simple">
+<dt>list_coords = [(21.3224, 45.2358),</dt><dd><p>(21.3856, 42.0094),
+(20.9574, 41.5286)] (coords have to be float)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>coords_dest</strong> (<em>list</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>A list of coord as (longitude, latitude) , like :</dt><dd><dl class="simple">
+<dt>list_coords = [(21.3224, 45.2358),</dt><dd><p>(21.3856, 42.0094),
+(20.9574, 41.5286)] (coords have to be float)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>ids_origin</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of name/id to use to label the source axis of
+the result <cite>DataFrame</cite> (default: None).</p></li>
+<li><p><strong>ids_dest</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of name/id to use to label the destination axis of
+the result <cite>DataFrame</cite> (default: None).</p></li>
+<li><p><strong>output</strong> (<em>str</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>The type of annotated matrice to return (DataFrame or numpy array)</dt><dd><p>’raw’ for the (parsed) json response from OSRM
+‘pandas’, ‘df’ or ‘DataFrame’ for a DataFrame
+‘numpy’, ‘array’ or ‘np’ for a numpy array (default is “np”)</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>annotations</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘duration’ (default) or ‘distance’</p></li>
+<li><p><strong>url_config</strong> (<em>osrm.RequestConfig</em><em>, </em><em>optional</em>) – Parameters regarding the host, version and profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- if output==’raw’</strong> (<em>a dict, the parsed json response.</em>)</p></li>
+<li><p><strong>- if output==’np’</strong> (<em>a numpy.ndarray containing the time in minutes,</em>) – a list of snapped origin coordinates,
+a list of snapped destination coordinates.</p></li>
+<li><p><strong>- if output==’pandas’</strong> (<em>a labeled DataFrame containing the time matrix in minutes,</em>) – a list of snapped origin coordinates,
+a list of snapped destination coordinates.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.ScenarioAPI.trip">
+<code class="sig-name descname">trip</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">roundtrip=True</em>, <em class="sig-param">source='any'</em>, <em class="sig-param">destination='any'</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.trip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapping OSRM ‘trip’ function and returning the JSON reponse
+with the route_geometry decoded (in WKT or WKB) if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord_origin</strong> (<em>list/tuple of two floats</em>) – (x ,y) where x is longitude and y is latitude</p></li>
+<li><p><strong>steps</strong> (<em>bool</em><em>, </em><em>default False</em>) – </p></li>
+<li><p><strong>output</strong> (<em>str</em><em>, </em><em>default 'full'</em>) – Define the type of output (full response or only route(s))</p></li>
+<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Format in which decode the geometry, either “polyline” (ie. not decoded),
+“geojson”, “WKT” or “WKB” (default: “polyline”).</p></li>
+<li><p><strong>overview</strong> (<em>str</em><em>, </em><em>optional</em>) – Query for the geometry overview, either “simplified”, “full” or “false”
+(Default: “simplified”)</p></li>
+<li><p><strong>roundtrip</strong> (<em>bool</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>destination</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>annotations</strong> (<em>str</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>url_config</strong> (<em>osrm.RequestConfig</em><em>, </em><em>optional</em>) – Parameters regarding the host, version and profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>- if ‘only_index’</strong> (<em>a dict containing respective indexes</em>) – of trips and waypoints</p></li>
+<li><p><strong>- if ‘raw’</strong> (<em>the original json returned by OSRM</em>)</p></li>
+<li><p><strong>- if ‘WKT’</strong> (<em>the json returned by OSRM with the ‘route_geometry’ converted</em>) – in WKT format</p></li>
+<li><p><strong>- if ‘WKB’</strong> (<em>the json returned by OSRM with the ‘route_geometry’ converted</em>) – in WKB format</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tebetebe.POIDataset">
+<span id="tb-poidataset"></span><h2>tb.POIDataset<a class="headerlink" href="#module-tebetebe.POIDataset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.POIDataset.POIDataset">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.POIDataset.</code><code class="sig-name descname">POIDataset</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">geopandas.geodataframe.GeoDataFrame</span></code></p>
+<p>Extension of a GeoDataFrame which stores only points, to be used as origin,
+destination, and waypoints in routing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of POIDataset (required)</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.POIDataset.POIDataset.from_features">
+<em class="property">classmethod </em><code class="sig-name descname">from_features</code><span class="sig-paren">(</span><em class="sig-param">features</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.from_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.from_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize POIDataset from GeoJSON features</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.POIDataset.POIDataset.from_file">
+<em class="property">classmethod </em><code class="sig-name descname">from_file</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize POIDataset from file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.POIDataset.POIDataset.from_overpass">
+<em class="property">classmethod </em><code class="sig-name descname">from_overpass</code><span class="sig-paren">(</span><em class="sig-param">query</em>, <em class="sig-param">name=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.from_overpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.from_overpass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize POIDataset from Overpass API query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query <em>must</em> output in JSON! (eg. [out:json];)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the POI dataset</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite POIDataset if it already exists on disk</p></li>
+<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save POIDataset</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.POIDataset.POIDataset.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return POI dataset name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.POIDataset.POIDataset.set_name">
+<code class="sig-name descname">set_name</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set POI dataset name</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tebetebe.Environment">
+<span id="tb-environment"></span><h2>tb.Environment<a class="headerlink" href="#module-tebetebe.Environment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.Environment.Environment">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.Environment.</code><code class="sig-name descname">Environment</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Environment.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Environment.Environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Environment is a class to set default options for many of the tebetebe classes.
+Namely, this is used to specify the directory for temporary files generated by
+compilation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tebetebe.OSRM">
+<span id="tb-osrm"></span><h2>tb.OSRM<a class="headerlink" href="#module-tebetebe.OSRM" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.OSRM.OSRM">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.OSRM.</code><code class="sig-name descname">OSRM</code><span class="sig-paren">(</span><em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class wrapper around all the osrm-* binaries. All functions accept
+additional <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs to be passed upon execution. This class is used in
+the background and need not be initialized directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>bool</em>) – Output stdout from osrm commands.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.contract">
+<code class="sig-name descname">contract</code><span class="sig-paren">(</span><em class="sig-param">osrm_file</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.contract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.contract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>osrm-contract</cite> on a .osrm file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.customize">
+<code class="sig-name descname">customize</code><span class="sig-paren">(</span><em class="sig-param">osrm_file</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.customize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.customize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>osrm-customize</cite> on a .osrm file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.extract">
+<code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param">osm_path</em>, <em class="sig-param">profile_path</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>osrm-extract</cite> with a path to the osm route network and lua profile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.get_version">
+<code class="sig-name descname">get_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.get_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return OSRM binaries version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.partition">
+<code class="sig-name descname">partition</code><span class="sig-paren">(</span><em class="sig-param">osrm_file</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>osrm-partition</cite> for a .osrm file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.OSRM.OSRM.routed">
+<code class="sig-name descname">routed</code><span class="sig-paren">(</span><em class="sig-param">osrm_file</em>, <em class="sig-param">ready_callback</em>, <em class="sig-param">done_callback</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM.routed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM.routed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>osrm-routed</cite> on a .osrm file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id5"><span class="problematic" id="id6">*</span></a>.osrm</p></li>
+<li><p><strong>ready_callback</strong> (<em>function</em>) – Function to be called when osrm-routed is ready for HTTP requests</p></li>
+<li><p><strong>done_callback</strong> (<em>function</em>) – Function to be called when osrm-routed has exited</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – <cite>osrm-routed</cite> output is so verbose it is default off even if the parent class <cite>verbose=True</cite>. Set this to true if you want to see <cite>osrm-routed</cite> output anyway.</p></li>
+<li><p><strong>**kwargs</strong> – Any additional parameters to be passed to osrm-routed</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -169,13 +661,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="tebetebe.html" class="btn btn-neutral float-right" title="tb.POIDataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-    </div>
   
 
   <hr/>

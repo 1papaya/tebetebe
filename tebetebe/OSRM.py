@@ -9,7 +9,9 @@ from . import defaults
 
 class OSRM():
     """
-    Base class wrapper around all the osrm-* executables
+    Base class wrapper around all the osrm-* binaries. All functions accept
+    additional **kwargs to be passed upon execution. This class is used in
+    the background and need not be initialized directly.
 
     Parameters
     ----------
@@ -36,28 +38,15 @@ class OSRM():
         except CommandNotFound as err:
             self.log.error("OSRM binary not found: {}".format(err))
 
-    def extract(self, osm_file, profile, **kwargs):
+    def extract(self, osm_path, profile_path, **kwargs):
         '''
-        Call osrm-extract
-
-        Parameters
-        ----------
-        osm_file : str
-            Path to *.osm{.pbf} file
-        profile : str
-            Path to *.lua file
-        **kwargs
-            Any additional parameters to be passed to osrm-extract
-
-        Returns
-        -------
-        sh.RunningCommand
+        Call `osrm-extract` with a path to the osm route network and lua profile. 
         '''
 
         defaults = {"_bg": True,
                     "_out": sys.stdout if self.verbose else None}
 
-        proc = self._osrm_extract(osm_file, "-p", profile, **{**defaults, **kwargs})
+        proc = self._osrm_extract(osm_path, "-p", profile_path, **{**defaults, **kwargs})
 
         self._log_cmd(proc)
         self.processes.append(proc)
@@ -65,20 +54,7 @@ class OSRM():
         return proc
 
     def partition(self, osrm_file, **kwargs):
-        '''
-        Call osrm-partition
-
-        Parameters
-        ----------
-        osrm_file : str
-            Path to *.osrm
-        **kwargs
-            Any additional parameters to be passed to osrm-partition
-
-        Returns
-        -------
-        sh.RunningCommand
-        '''
+        '''Call `osrm-partition` for a .osrm file'''
       
         defaults = {"_bg": True,
                     "_out": sys.stdout if self.verbose else None}
@@ -91,20 +67,7 @@ class OSRM():
         return proc
 
     def customize(self, osrm_file, **kwargs):
-        '''
-        Call osrm-customize
-
-        Parameters
-        ----------
-        osrm_file : str
-            Path to *.osrm
-        **kwargs
-            Any additional parameters to be passed to osrm-customize
-
-        Returns
-        -------
-        sh.RunningCommand
-        '''
+        '''Call `osrm-customize` on a .osrm file'''
       
         defaults = {"_bg": True,
                     "_out": sys.stdout if self.verbose else None}
@@ -117,20 +80,7 @@ class OSRM():
         return proc
 
     def contract(self, osrm_file, **kwargs):
-        '''
-        Call osrm-contract
-
-        Parameters
-        ----------
-        osrm_file : str
-            Path to *.osrm
-        **kwargs
-            Any additional parameters to be passed to osrm-contract
-
-        Returns
-        -------
-        sh.RunningCommand
-        '''
+        '''Call `osrm-contract` on a .osrm file'''
 
         defaults = {"_bg": True,
                     "_out": sys.stdout if self.verbose else None}
@@ -142,9 +92,9 @@ class OSRM():
 
         return proc
 
-    def routed(self, osrm_file, ready_callback, done_callback, **kwargs):
+    def routed(self, osrm_file, ready_callback, done_callback, verbose=False, **kwargs):
         '''
-        Call osrm-routed
+        Call `osrm-routed` on a .osrm file
 
         Parameters
         ----------
@@ -154,29 +104,28 @@ class OSRM():
             Function to be called when osrm-routed is ready for HTTP requests
         done_callback : function
             Function to be called when osrm-routed has exited
+        verbose : bool
+            `osrm-routed` output is so verbose it is default off even if the parent class `verbose=True`. Set this to true if you want to see `osrm-routed` output anyway.
         **kwargs
             Any additional parameters to be passed to osrm-routed
-
-        Returns
-        -------
-        sh.RunningCommand
-
-        Notes
-        -----
-        osrm-routed stdout output will not be echoed even with verbose=True, because
-        the INFO verbosity for osrm-routed includes every single HTTP request (*ton*
-        of output)
         '''
 
-        ## Parse OSRM output line by line and wait til server is running to call callback
-        def parse_output(line, stdin, process):
+        ## Parse OSRM output line by line and exec callback when server is running
+        def parse_out(line, stdin, process):
             if line.find("running and waiting for requests"):
                 ready_callback(process)
-                return True
+                return True ## Returning True stops executing this function each line
+
+        def parse_out_verbose(line, stdin, process):
+            if line.find("running and waiting for requests"):
+                ready_callback(process)
+
+            print(line)
 
         defaults = {"_bg": True, "_bg_exc": False,
                     "verbosity": "INFO", "ip": "127.0.0.1",
-                    "_out": parse_output, "_done": done_callback}
+                    "_out": parse_out_verbose if verbose else parse_output,
+                    "_done": done_callback}
 
         proc = self._osrm_routed(osrm_file, **{**defaults, **kwargs})
 
@@ -186,25 +135,11 @@ class OSRM():
         return proc
 
     def get_version(self):
-        '''
-        Get version of osrm
-
-        Returns
-        -------
-        str
-            OSRM version
-        '''
+        '''Return OSRM binaries version'''
         return self._osrm_extract("--version")
 
     def _log_cmd(self, proc):
-        '''
-        Log command text in a debug log output
-
-        Parameters
-        ----------
-        proc : sh.RunningCommand
-            Process to output command text
-        '''
+        '''Log command text in a debug log output'''
         cmd = " ".join([b.decode('utf-8') for b in proc.cmd])
 
         self.log.debug("Executing: {}".format(cmd))
