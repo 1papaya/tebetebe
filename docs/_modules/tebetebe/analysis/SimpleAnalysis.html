@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tebetebe.analysis.SimpleAnalysis &mdash; tebetebe  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tebetebe
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html">tb.POIDataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html#module-tebetebe.RoutingProfile">tb.RoutingProfile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html#module-tebetebe.Scenario">tb.Scenario</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html#module-tebetebe.Environment">tb.Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tebetebe.html#module-tebetebe.OSRM">tb.OSRM</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tebetebe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tebetebe.analysis.SimpleAnalysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tebetebe.analysis.SimpleAnalysis</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Analysis</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">defaults</span>
+<span class="kn">from</span> <span class="nn">shapely.wkt</span> <span class="k">import</span> <span class="n">loads</span> <span class="k">as</span> <span class="n">wktToLineString</span>
+
+<div class="viewcode-block" id="SimpleAnalysis"><a class="viewcode-back" href="../../../tebetebe.analysis.html#tebetebe.analysis.SimpleAnalysis.SimpleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">SimpleAnalysis</span><span class="p">(</span><span class="n">Analysis</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Example of an Analysis class that can be written on top of a ScenarioAPI.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    api: ScenarioAPI</span>
+<span class="sd">        ScenarioAPI to be queried for the SimpleAnalysis</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">LOGGER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+
+<div class="viewcode-block" id="SimpleAnalysis.time_matrix"><a class="viewcode-back" href="../../../tebetebe.analysis.html#tebetebe.analysis.SimpleAnalysis.SimpleAnalysis.time_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">time_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origins</span><span class="p">,</span> <span class="n">dests</span><span class="p">,</span> <span class="n">origin_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dest_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return a time matrix of origins to destinations, in a DataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origins: POIDataset</span>
+<span class="sd">            Origin points to be used in time matrix (these will be returned as rows)</span>
+<span class="sd">        dests: POIDataset</span>
+<span class="sd">            Destination points to be used in time matrix (these will be returned as columns)</span>
+<span class="sd">        origin_id_col: str, optional</span>
+<span class="sd">            Column in origins dataset to be used as index for time matrix. ID col must be unique if specified; if not, the row index will be used</span>
+<span class="sd">        dest_id_col: str, optional</span>
+<span class="sd">            Column in dests dataset to be used as index for time matrix. ID col must be unique if specified; if not, the row index will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.GeoDataFrame</span>
+<span class="sd">            Matrix dataframe of time, in seconds, from each origin to each destination.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;tebetebe&quot;</span><span class="p">)</span>
+
+        <span class="c1">## From</span>
+        <span class="n">origin_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">origins</span><span class="p">[</span><span class="n">origin_id_col</span><span class="p">])</span> <span class="k">if</span> <span class="n">origins_id_col</span> <span class="k">else</span> <span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">origin_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_coords_list</span><span class="p">(</span><span class="n">origins</span><span class="p">)</span>
+
+        <span class="n">dest_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dests</span><span class="p">[</span><span class="n">dest_id_col</span><span class="p">])</span> <span class="k">if</span> <span class="n">dest_id_col</span> <span class="k">else</span> <span class="n">dests</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">dest_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_coords_list</span><span class="p">(</span><span class="n">dests</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">from_snap</span><span class="p">,</span> <span class="n">to_snap</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">origin_coords</span><span class="p">,</span>
+                                                          <span class="n">coords_dest</span> <span class="o">=</span> <span class="n">dest_coords</span><span class="p">,</span>
+                                                          <span class="n">ids_origin</span> <span class="o">=</span> <span class="n">origin_ids</span><span class="p">,</span>
+                                                          <span class="n">ids_dest</span> <span class="o">=</span> <span class="n">dest_ids</span><span class="p">,</span>
+                                                          <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">matrix</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimpleAnalysis.get_routes"><a class="viewcode-back" href="../../../tebetebe.analysis.html#tebetebe.analysis.SimpleAnalysis.SimpleAnalysis.get_routes">[docs]</a>    <span class="k">def</span> <span class="nf">get_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origins</span><span class="p">,</span> <span class="n">dests</span><span class="p">,</span> <span class="n">origin_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dest_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get a GeoDataFrame of routes between each origin and destination. This is</span>
+<span class="sd">        probably not the most efficient way to do this! Both datasets should be in EPSG:4326</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origins: POIDataset</span>
+<span class="sd">            Origin points to be used in routing</span>
+<span class="sd">        dests: POIDataset</span>
+<span class="sd">            Destination points to be used in routing</span>
+<span class="sd">        origin_id_col: str, optional</span>
+<span class="sd">            Column in origins dataset to be used as origin_id row in returned GDF. ID col must be unique if specified; if not, the row index will be used</span>
+<span class="sd">        dest_id_col: str, optional</span>
+<span class="sd">            Column in dests dataset to be used as dest_id row in returned GDF. ID col must be unique if specified; if not, the row index will be used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gpd.GeoDataFrame</span>
+<span class="sd">            Data Frame with &quot;origin_id&quot;, &quot;dest_id&quot;, &quot;time&quot;, &quot;dist&quot; columns, and a geometry column with the route calculated by OSRM.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1">## Use index if id_cols not spefcified</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">origin_id_col</span><span class="p">:</span>
+            <span class="n">origin_id_col</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+            <span class="n">origins</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dest_id_col</span><span class="p">:</span>
+            <span class="n">dest_id_col</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+            <span class="n">dests</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dests</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1">## Get DF of all pairwise origin and dest ids</span>
+        <span class="n">permutations</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">origins</span><span class="p">[</span><span class="n">origin_id_col</span><span class="p">],</span> <span class="n">dests</span><span class="p">[</span><span class="n">dest_id_col</span><span class="p">]])</span>
+        <span class="n">origins_dests</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">permutations</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;origin_id&quot;</span><span class="p">,</span> <span class="s2">&quot;dest_id&quot;</span><span class="p">])</span>
+
+        <span class="c1">## Trim down to and from DFs into just the id and geometry, then merge to routes_df</span>
+        <span class="n">origins_df</span> <span class="o">=</span> <span class="n">origins</span><span class="p">[[</span><span class="n">origin_id_col</span><span class="p">,</span><span class="s2">&quot;geometry&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">origin_id_col</span><span class="p">:</span> <span class="s2">&quot;origin_id&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;origin_geom&quot;</span><span class="p">})</span>
+        <span class="n">dests_df</span> <span class="o">=</span> <span class="n">dests</span><span class="p">[[</span><span class="n">dest_id_col</span><span class="p">,</span><span class="s2">&quot;geometry&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">dest_id_col</span><span class="p">:</span> <span class="s2">&quot;dest_id&quot;</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="s2">&quot;dest_geom&quot;</span><span class="p">})</span>
+
+        <span class="n">routes_df</span> <span class="o">=</span> <span class="n">origins_dests</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">origins_df</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dests_df</span><span class="p">)</span>
+
+        <span class="c1">## Add on distance and geometry columns</span>
+        <span class="c1">## -1 so if something goes wrong, we can tell it&#39;s bad in the output</span>
+        <span class="n">routes_df</span><span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">routes_df</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">routes_df</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">## Not the most efficient, I&#39;m sure</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">to_from</span> <span class="ow">in</span> <span class="n">routes_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">origin_coords</span> <span class="o">=</span> <span class="p">(</span><span class="n">to_from</span><span class="o">.</span><span class="n">origin_geom</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">to_from</span><span class="o">.</span><span class="n">origin_geom</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">dest_coords</span> <span class="o">=</span> <span class="p">(</span><span class="n">to_from</span><span class="o">.</span><span class="n">dest_geom</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">to_from</span><span class="o">.</span><span class="n">dest_geom</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">route</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">simple_route</span><span class="p">(</span><span class="n">origin_coords</span><span class="p">,</span>
+                                              <span class="n">dest_coords</span><span class="p">,</span>
+                                              <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;wkt&quot;</span><span class="p">,</span>
+                                              <span class="n">overview</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">)</span>
+
+                <span class="n">routes_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+                <span class="n">routes_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;distance&quot;</span><span class="p">]</span>
+                <span class="n">routes_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wktToLineString</span><span class="p">(</span><span class="n">route</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">])</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+
+        <span class="n">routes_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;origin_geom&quot;</span><span class="p">,</span> <span class="s2">&quot;dest_geom&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">routes_df</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_coords_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gdf</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, 1papaya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

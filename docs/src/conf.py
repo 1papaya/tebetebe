@@ -1,10 +1,12 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 project = 'tebetebe'
 copyright = '2019, 1papaya'
 author = '1papaya'
+
+html_theme = "sphinx_rtd_theme"
 
 extensions = [
     'sphinx.ext.napoleon',
