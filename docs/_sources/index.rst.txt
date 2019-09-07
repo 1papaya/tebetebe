@@ -1,18 +1,3 @@
-Introduction
-************
-
-
-Examples
-********
-
-Sko Buffs
----------
-
-Yebo
----------
-
-
-
 API Reference
 *********
 
