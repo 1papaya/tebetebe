@@ -2,5 +2,4 @@
 
 import logging
 
-from .Analysis import Analysis
-from .SimpleAnalysis import SimpleAnalysis
+from .AccessIsochrone import AccessIsochrone

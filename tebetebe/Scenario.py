@@ -2,7 +2,6 @@
 
 import subprocess
 import logging
-import socket
 import shutil
 import osrm
 import time
@@ -18,6 +17,7 @@ from .RoutingProfile import RoutingProfile
 from .RouteNetwork import RouteNetwork
 from .OSRM import OSRM
 from . import defaults
+from . import utils
 
 class Scenario():
     """
@@ -124,7 +124,7 @@ class Scenario():
             ## so rename and move all files to self.path
             network_path = self.route_network.get_path()
 
-            for src_path in network_path.parent.glob("{}.osrm*".format(network_path.stem)):
+            for src_path in network_path.parent.glob("{}.osrm*".format(network_path.stem.split(".")[0])):
                 dst_file = src_path.name.replace(src_path.stem.split(".")[0], self.name)
                 dst_path = self.path.parent / dst_file
 
@@ -147,20 +147,17 @@ class Scenario():
             self.log.error(exc)
 
     def run(self, **kwargs):
-        '''
-        Run a Scenario and return ScenarioAPI
+        '''Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)'''
 
-        Parameters
-        ----------
-        **kwargs
-            Any additional parameters to be passed to osrm-routed
+        ## Compile scenario
+        try:
+            self.compile()
+            return ScenarioAPI(self, call_opts={**kwargs})
+        except Exception as exc:
+            self.log.error(exc)
 
-        Returns
-        -------
-        ScenarioAPI
-        '''
-
-        return ScenarioAPI(self, call_opts={**kwargs})
+    ## Alias for calling
+    __call__ = run
 
 class ScenarioAPI(AbstractContextManager):
     '''
@@ -208,19 +205,12 @@ class ScenarioAPI(AbstractContextManager):
         self.trip = partial(osrm.trip, url_config=self.config)
 
     def __enter__(self):
-        self.call_opts["port"] = self._find_open_port()
+        self.call_opts["port"] = utils.find_open_port()
         self.call_opts["algorithm"] = self.scenario.algorithm
         self.call_opts["dataset_name"] = self.scenario.name
 
         ## Point the osrm http api to correct port
         self._set_config(self.call_opts["port"])
-
-        ## Compile scenario
-        try:
-            self.scenario.compile()
-        except Exception as exc:
-            self.log.error(exc)
-
         self.ready = False
 
         ## Start up OSRM Server
@@ -265,13 +255,3 @@ class ScenarioAPI(AbstractContextManager):
             self.process.kill()
         except:
             pass
-
-    def _find_open_port(self):
-        # Thanks to this gist! https://gist.github.com/jdavis/4040223
-
-        sock = socket.socket()
-        sock.bind(('', 0))
-
-        _, port = sock.getsockname()
-
-        return port

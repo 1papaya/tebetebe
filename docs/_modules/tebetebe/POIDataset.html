@@ -199,12 +199,12 @@
 <div class="viewcode-block" id="POIDataset.from_overpass"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.from_overpass">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_overpass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="n">defaults</span><span class="o">.</span><span class="n">TMP_DIR</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Initialize POIDataset from Overpass API query</span>
+<span class="sd">        Initialize POIDataset from Overpass API query. Any returned nodes or closed ways with `center` attributes will be included in the dataset.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        query : str</span>
-<span class="sd">            Query to be sent to overpass API. This query *must* output in JSON! (eg. [out:json];)</span>
+<span class="sd">            Query to be sent to overpass API. This query should *not* include an `out` directive (eg. [out:json];)</span>
 <span class="sd">        name : str</span>
 <span class="sd">            Name of the POI dataset</span>
 <span class="sd">        overwrite : bool</span>
@@ -229,9 +229,12 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using existing POIDataset </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_file</span><span class="p">))</span>
                 <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">out_name</span><span class="p">)</span>
 
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading POIDataset </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
         <span class="c1">## Query API</span>
         <span class="n">oapi</span> <span class="o">=</span> <span class="n">overpass</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
-        <span class="n">json</span> <span class="o">=</span> <span class="n">oapi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query</span><span class="p">,</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">oapi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;[out:json];</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">),</span>
                         <span class="n">verbosity</span><span class="o">=</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span>
                         <span class="n">responseformat</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
                         <span class="n">build</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

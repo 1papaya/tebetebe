@@ -145,7 +145,6 @@
 
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">osrm</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -161,6 +160,7 @@
 <span class="kn">from</span> <span class="nn">.RouteNetwork</span> <span class="k">import</span> <span class="n">RouteNetwork</span>
 <span class="kn">from</span> <span class="nn">.OSRM</span> <span class="k">import</span> <span class="n">OSRM</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
 
 <div class="viewcode-block" id="Scenario"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario">[docs]</a><span class="k">class</span> <span class="nc">Scenario</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -267,7 +267,7 @@
             <span class="c1">## so rename and move all files to self.path</span>
             <span class="n">network_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">route_network</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
 
-            <span class="k">for</span> <span class="n">src_path</span> <span class="ow">in</span> <span class="n">network_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.osrm*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network_path</span><span class="o">.</span><span class="n">stem</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">src_path</span> <span class="ow">in</span> <span class="n">network_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.osrm*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])):</span>
                 <span class="n">dst_file</span> <span class="o">=</span> <span class="n">src_path</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">src_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">dst_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">dst_file</span>
 
@@ -290,20 +290,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Scenario.run"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Run a Scenario and return ScenarioAPI</span>
+        <span class="sd">&#39;&#39;&#39;Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)&#39;&#39;&#39;</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Any additional parameters to be passed to osrm-routed</span>
+        <span class="c1">## Compile scenario</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ScenarioAPI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">call_opts</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ScenarioAPI</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">return</span> <span class="n">ScenarioAPI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">call_opts</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">})</span></div></div>
+    <span class="c1">## Alias for calling</span>
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">run</span></div>
 
 <div class="viewcode-block" id="ScenarioAPI"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.ScenarioAPI">[docs]</a><span class="k">class</span> <span class="nc">ScenarioAPI</span><span class="p">(</span><span class="n">AbstractContextManager</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -351,19 +348,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">trip</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">osrm</span><span class="o">.</span><span class="n">trip</span><span class="p">,</span> <span class="n">url_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_open_port</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_open_port</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;algorithm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">algorithm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span>
 
         <span class="c1">## Point the osrm http api to correct port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">])</span>
-
-        <span class="c1">## Compile scenario</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1">## Start up OSRM Server</span>
@@ -407,17 +397,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">_find_open_port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Thanks to this gist! https://gist.github.com/jdavis/4040223</span>
-
-        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
-        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">port</span></div>
+            <span class="k">pass</span></div>
 </pre></div>
 
            </div>

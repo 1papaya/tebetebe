@@ -171,7 +171,7 @@
 
         <span class="c1">## Check path exists</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;OSM Dataset Not Found (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;RouteNetwork Not Found (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
         <span class="c1">## Set profile name to filename if not specified</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -192,7 +192,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        query : str</span>
-<span class="sd">            Query to be sent to overpass API. This query *must* output in XML! (eg. [out:xml];)</span>
+<span class="sd">            Query to be sent to overpass API. This query should *not* include an `out` directive (eg. [out:xml];)</span>
 <span class="sd">        name : str</span>
 <span class="sd">            Name of the route network</span>
 <span class="sd">        overwrite : bool</span>
@@ -218,12 +218,14 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_file</span><span class="p">))</span>
                 <span class="n">out_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using existing OSMDataset </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_file</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using existing RouteNetwork </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_file</span><span class="p">))</span>
                 <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="n">tmp_dir</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading RouteNetwork </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1">## Query API</span>
         <span class="n">oapi</span> <span class="o">=</span> <span class="n">overpass</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
-        <span class="n">xml</span> <span class="o">=</span> <span class="n">oapi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query</span><span class="p">,</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">oapi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;[out:xml];</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">),</span>
                        <span class="n">verbosity</span><span class="o">=</span><span class="s2">&quot;geom&quot;</span><span class="p">,</span>
                        <span class="n">responseformat</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="p">,</span>
                        <span class="n">build</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

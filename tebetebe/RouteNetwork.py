@@ -28,7 +28,7 @@ class RouteNetwork():
 
         ## Check path exists
         if not self.path.is_file():
-            raise FileNotFoundError("OSM Dataset Not Found ({})".format(path))
+            raise FileNotFoundError("RouteNetwork Not Found ({})".format(path))
 
         ## Set profile name to filename if not specified
         self.name = name if name else self.path.stem.split(".")[0]
@@ -49,7 +49,7 @@ class RouteNetwork():
         Parameters
         ----------
         query : str
-            Query to be sent to overpass API. This query *must* output in XML! (eg. [out:xml];)
+            Query to be sent to overpass API. This query should *not* include an `out` directive (eg. [out:xml];)
         name : str
             Name of the route network
         overwrite : bool
@@ -75,12 +75,14 @@ class RouteNetwork():
                 logger.info("Overwriting {}".format(out_file))
                 out_file.unlink()
             else:
-                logger.info("Using existing OSMDataset {}".format(out_file))
+                logger.info("Using existing RouteNetwork {}".format(out_file))
                 return cls(out_file, name=name, overwrite=overwrite, tmp_dir=tmp_dir)
+
+        logger.info("Downloading RouteNetwork {}".format(name))
 
         ## Query API
         oapi = overpass.API()
-        xml = oapi.get(query,
+        xml = oapi.get("[out:xml];{}".format(query),
                        verbosity="geom",
                        responseformat="xml",
                        build=False)

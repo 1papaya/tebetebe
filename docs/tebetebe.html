@@ -172,7 +172,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query <em>must</em> output in XML! (eg. [out:xml];)</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query should <em>not</em> include an <cite>out</cite> directive (eg. [out:xml];)</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – Name of the route network</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite route network if it already exists on disk</p></li>
 <li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save route network</p></li>
@@ -285,18 +285,7 @@ route network and routing profile into a routable OSRM file</p>
 <dl class="method">
 <dt id="tebetebe.Scenario.Scenario.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run a Scenario and return ScenarioAPI</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>**kwargs</strong> – Any additional parameters to be passed to osrm-routed</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="index.html#tebetebe.Scenario.ScenarioAPI" title="tebetebe.Scenario.ScenarioAPI">ScenarioAPI</a></p>
-</dd>
-</dl>
+<dd><p>Compile and run scenario, and return ScenarioAPI. Any <cite>**kwargs</cite> are passed as arguments to osrm-routed. This can also be called by Scenario(<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)</p>
 </dd></dl>
 
 </dd></dl>
@@ -311,7 +300,7 @@ and provides a low-level API for querying that server</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scenario</strong> (<a class="reference internal" href="index.html#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
+<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
 <li><p><strong>call_opts</strong> (<em>dict</em>) – Any additional parameters to be passed to osrm-routed</p></li>
 </ul>
 </dd>
@@ -527,11 +516,11 @@ destination, and waypoints in routing.</p>
 <dl class="method">
 <dt id="tebetebe.POIDataset.POIDataset.from_overpass">
 <em class="property">classmethod </em><code class="sig-name descname">from_overpass</code><span class="sig-paren">(</span><em class="sig-param">query</em>, <em class="sig-param">name=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.from_overpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.from_overpass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize POIDataset from Overpass API query</p>
+<dd><p>Initialize POIDataset from Overpass API query. Any returned nodes or closed ways with <cite>center</cite> attributes will be included in the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query <em>must</em> output in JSON! (eg. [out:json];)</p></li>
+<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query should <em>not</em> include an <cite>out</cite> directive (eg. [out:json];)</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – Name of the POI dataset</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite POIDataset if it already exists on disk</p></li>
 <li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save POIDataset</p></li>
@@ -574,7 +563,7 @@ compilation.</p>
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.OSRM.</code><code class="sig-name descname">OSRM</code><span class="sig-paren">(</span><em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class wrapper around all the osrm-* binaries. All functions accept
-additional <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs to be passed upon execution. This class is used in
+additional <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs to be passed upon execution. This class is used in
 the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -618,7 +607,7 @@ the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id5"><span class="problematic" id="id6">*</span></a>.osrm</p></li>
+<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id7"><span class="problematic" id="id8">*</span></a>.osrm</p></li>
 <li><p><strong>ready_callback</strong> (<em>function</em>) – Function to be called when osrm-routed is ready for HTTP requests</p></li>
 <li><p><strong>done_callback</strong> (<em>function</em>) – Function to be called when osrm-routed has exited</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – <cite>osrm-routed</cite> output is so verbose it is default off even if the parent class <cite>verbose=True</cite>. Set this to true if you want to see <cite>osrm-routed</cite> output anyway.</p></li>

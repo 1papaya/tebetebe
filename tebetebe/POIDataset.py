@@ -56,12 +56,12 @@ class POIDataset(GeoDataFrame):
     @classmethod
     def from_overpass(cls, query, name=None, overwrite=False, tmp_dir=defaults.TMP_DIR, **kwargs):
         '''
-        Initialize POIDataset from Overpass API query
+        Initialize POIDataset from Overpass API query. Any returned nodes or closed ways with `center` attributes will be included in the dataset.
 
         Parameters
         ----------
         query : str
-            Query to be sent to overpass API. This query *must* output in JSON! (eg. [out:json];)
+            Query to be sent to overpass API. This query should *not* include an `out` directive (eg. [out:json];)
         name : str
             Name of the POI dataset
         overwrite : bool
@@ -86,9 +86,12 @@ class POIDataset(GeoDataFrame):
                 logger.info("Using existing POIDataset {}".format(out_file))
                 return cls.from_file(out_file, name=out_name)
 
+
+        logger.info("Downloading POIDataset {}".format(name))
+
         ## Query API
         oapi = overpass.API()
-        json = oapi.get(query,
+        json = oapi.get("[out:json];{}".format(query),
                         verbosity="geom",
                         responseformat="json",
                         build=False)

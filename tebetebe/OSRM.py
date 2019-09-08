@@ -111,12 +111,12 @@ class OSRM():
         '''
 
         ## Parse OSRM output line by line and exec callback when server is running
-        def parse_out(line, stdin, process):
+        def parse_output(line, stdin, process):
             if line.find("running and waiting for requests"):
                 ready_callback(process)
                 return True ## Returning True stops executing this function each line
 
-        def parse_out_verbose(line, stdin, process):
+        def parse_output_verbose(line, stdin, process):
             if line.find("running and waiting for requests"):
                 ready_callback(process)
 
@@ -124,7 +124,7 @@ class OSRM():
 
         defaults = {"_bg": True, "_bg_exc": False,
                     "verbosity": "INFO", "ip": "127.0.0.1",
-                    "_out": parse_out_verbose if verbose else parse_output,
+                    "_out": parse_output_verbose if verbose else parse_output,
                     "_done": done_callback}
 
         proc = self._osrm_routed(osrm_file, **{**defaults, **kwargs})

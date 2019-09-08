@@ -392,7 +392,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">center_point</span> <span class="o">=</span> <span class="n">_Point</span><span class="p">(</span>
             <span class="n">latitude</span><span class="o">=</span><span class="n">new_pt_origin</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">longitude</span><span class="o">=</span><span class="n">new_pt_origin</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">render_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_class</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone.render_contour"><a class="viewcode-back" href="../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.render_contour">[docs]</a>    <span class="k">def</span> <span class="nf">render_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_class</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -406,7 +406,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collec_poly</span><span class="p">,</span> <span class="n">levels</span> <span class="o">=</span> <span class="n">contour_poly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">n_class</span><span class="o">=</span><span class="n">n_class</span><span class="p">)</span>
         <span class="n">gdf_poly</span> <span class="o">=</span> <span class="n">isopoly_to_gdf</span><span class="p">(</span><span class="n">collec_poly</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">gdf_poly</span>
+        <span class="k">return</span> <span class="n">gdf_poly</span></div>
 </pre></div>
 
            </div>
