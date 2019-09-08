@@ -148,22 +148,22 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 
-<div class="viewcode-block" id="RoutingProfile"><a class="viewcode-back" href="../../index.html#tebetebe.RoutingProfile.RoutingProfile">[docs]</a><span class="k">class</span> <span class="nc">RoutingProfile</span><span class="p">():</span>
+<div class="viewcode-block" id="RoutingProfile"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RoutingProfile.RoutingProfile">[docs]</a><span class="k">class</span> <span class="nc">RoutingProfile</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    RoutingProfile is a .lua file with directives on how to turn a RouteNetwork</span>
 <span class="sd">    into a routable OSRM file</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    path: str</span>
+<span class="sd">    lua_path: str</span>
 <span class="sd">        Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</span>
 <span class="sd">    name: str, optional</span>
 <span class="sd">        Name of routing profile. If not provided, the .lua filename will be used.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lua_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">LOGGER</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">lua_path</span><span class="p">)</span>
 
         <span class="c1">## Check path exists</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
@@ -172,11 +172,11 @@
         <span class="c1">## Set profile name to lua filename if not specified</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span>
 
-<div class="viewcode-block" id="RoutingProfile.get_name"><a class="viewcode-back" href="../../index.html#tebetebe.RoutingProfile.RoutingProfile.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RoutingProfile.get_name"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RoutingProfile.RoutingProfile.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return name of routing profile&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-<div class="viewcode-block" id="RoutingProfile.get_path"><a class="viewcode-back" href="../../index.html#tebetebe.RoutingProfile.RoutingProfile.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RoutingProfile.get_path"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RoutingProfile.RoutingProfile.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return path of routing profile&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div></div>
 </pre></div>

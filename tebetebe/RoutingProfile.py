@@ -12,15 +12,15 @@ class RoutingProfile():
 
     Parameters
     ----------
-    path: str
+    lua_path: str
         Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.
     name: str, optional
         Name of routing profile. If not provided, the .lua filename will be used.
     '''
 
-    def __init__(self, path, name=None, **kwargs):
+    def __init__(self, lua_path, name=None, **kwargs):
         self.log = logging.getLogger(defaults.LOGGER)
-        self.path = Path(path)
+        self.path = Path(lua_path)
 
         ## Check path exists
         if not self.path.is_file():

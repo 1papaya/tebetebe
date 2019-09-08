@@ -271,13 +271,13 @@ AccessIsochrone is provided by the <a class="reference external" href="https://g
 <span id="tb-routenetwork"></span><h2>tb.RouteNetwork<a class="headerlink" href="#module-tebetebe.RouteNetwork" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="tebetebe.RouteNetwork.RouteNetwork">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">osm_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>.osm file from which a route network will be extracted</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to <a href="#id2"><span class="problematic" id="id3">*</span></a>.osm{.pbf} dataset</p></li>
+<li><p><strong>osm_path</strong> – Path to <a href="#id2"><span class="problematic" id="id3">*</span></a>.osm{.pbf} dataset</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – Name of OSMDataset</p></li>
 </ul>
 </dd>
@@ -323,14 +323,14 @@ AccessIsochrone is provided by the <a class="reference external" href="https://g
 <h2>tb.RoutingProfile<a class="headerlink" href="#tb-routingprofile" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-tebetebe.RoutingProfile"></span><dl class="class">
 <dt id="tebetebe.RoutingProfile.RoutingProfile">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">lua_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>RoutingProfile is a .lua file with directives on how to turn a RouteNetwork
 into a routable OSRM file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
+<li><p><strong>lua_path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
 <li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename will be used.</p></li>
 </ul>
 </dd>
@@ -417,7 +417,7 @@ and provides a low-level API for querying that server</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
+<li><p><strong>scenario</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
 <li><p><strong>call_opts</strong> (<em>dict</em>) – Any additional parameters to be passed to osrm-routed</p></li>
 </ul>
 </dd>
@@ -762,7 +762,7 @@ the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>api</strong> (<a class="reference internal" href="#tebetebe.Scenario.ScenarioAPI" title="tebetebe.Scenario.ScenarioAPI"><em>ScenarioAPI</em></a>) – API to be queried for access Isochrone</p></li>
+<li><p><strong>api</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.Scenario.ScenarioAPI" title="tebetebe.Scenario.ScenarioAPI"><em>ScenarioAPI</em></a>) – API to be queried for access Isochrone</p></li>
 <li><p><strong>point_origin</strong> (<em>2-floats tuple</em>) – The coordinates of the center point to use as (x, y).</p></li>
 <li><p><strong>points_grid</strong> (<em>int</em>) – The number of points of the underlying grid to use.</p></li>
 <li><p><strong>size</strong> (<em>float</em>) – Search radius (in wgs84 degrees)</p></li>

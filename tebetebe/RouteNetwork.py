@@ -15,16 +15,16 @@ class RouteNetwork():
 
     Parameters
     ----------
-    path:
+    osm_path:
         Path to *.osm{.pbf} dataset
     name: str
         Name of OSMDataset
     '''
 
-    def __init__(self, path, name=None, **kwargs):
+    def __init__(self, osm_path, name=None, **kwargs):
 
         self.log = logging.getLogger(defaults.LOGGER)
-        self.path = Path(path)
+        self.path = Path(osm_path)
 
         ## Check path exists
         if not self.path.is_file():

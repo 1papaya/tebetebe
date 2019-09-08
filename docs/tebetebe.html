@@ -154,13 +154,13 @@
 <span id="tb-routenetwork"></span><h1>tb.RouteNetwork<a class="headerlink" href="#module-tebetebe.RouteNetwork" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tebetebe.RouteNetwork.RouteNetwork">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">osm_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>.osm file from which a route network will be extracted</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to <a href="#id1"><span class="problematic" id="id2">*</span></a>.osm{.pbf} dataset</p></li>
+<li><p><strong>osm_path</strong> – Path to <a href="#id1"><span class="problematic" id="id2">*</span></a>.osm{.pbf} dataset</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – Name of OSMDataset</p></li>
 </ul>
 </dd>
@@ -206,14 +206,14 @@
 <span id="tb-routingprofile"></span><h1>tb.RoutingProfile<a class="headerlink" href="#module-tebetebe.RoutingProfile" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="tebetebe.RoutingProfile.RoutingProfile">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">lua_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>RoutingProfile is a .lua file with directives on how to turn a RouteNetwork
 into a routable OSRM file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
+<li><p><strong>lua_path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
 <li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename will be used.</p></li>
 </ul>
 </dd>
