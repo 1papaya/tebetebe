@@ -20,8 +20,8 @@ class Environment():
     classes available under the Environment. Useful examples of these kwargs include `verbose`
     and `overwrite`
 
-    Any **kwargs passed to the Environment classes will override the default Environment
-    variables if there is a duplicate.
+    Any **kwargs set in Environment classes will be overridden if the argument is specified during
+    class initialization.
 
     Parameters
     ----------

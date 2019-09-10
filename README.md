@@ -20,9 +20,7 @@
    
 ### Simple Example
 
-Calculate the route from Mbabane to Simunye using a walking scenario.
-
-Check out the [Documentation](https://1papaya.github.io/tebetebe) for more examples!
+Calculate the route from Mbabane to Simunye using a walking scenario. Check out the [Documentation](https://1papaya.github.io/tebetebe) for more examples!
 
 ```python
 import tebetebe as tb

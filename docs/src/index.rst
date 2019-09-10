@@ -41,7 +41,7 @@ This example downloads eSwatini highways from the Overpass API and uses the `def
 Scenario Comparison
 ****************
 
-By comparing origin:destination routes between different scenarios, we gain some insight about how those scenarios affect transportation patterns.
+By comparing origin:destination routes between different scenarios, we gain insight about how changing a transportation scenario affects route patterns.
 
 Here, we route the homesteads in an 8km radius from a river crossing to the local primary and high schools, both in a normal walking scenario and a flood scenario. We then compare the routes between scenarios to determine the homesteads affected by flood and the routes both in normal and flood conditions.
 

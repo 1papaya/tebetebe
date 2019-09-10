@@ -153,7 +153,7 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">hash_</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 
-<div class="viewcode-block" id="POIDataset"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset">[docs]</a><span class="k">class</span> <span class="nc">POIDataset</span><span class="p">(</span><span class="n">GeoDataFrame</span><span class="p">):</span>
+<div class="viewcode-block" id="POIDataset"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset">[docs]</a><span class="k">class</span> <span class="nc">POIDataset</span><span class="p">(</span><span class="n">GeoDataFrame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extension of a GeoDataFrame which stores only points, to be used as origin,</span>
 <span class="sd">    destination, and waypoints in routing.</span>
@@ -176,7 +176,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;crs&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">}</span>
 
-<div class="viewcode-block" id="POIDataset.set_name"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="POIDataset.set_name"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set POI dataset name&#39;&#39;&#39;</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_metadata&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -184,7 +184,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="POIDataset.get_name"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="POIDataset.get_name"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return POI dataset name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span></div>
 
@@ -196,7 +196,7 @@
 
         <span class="k">return</span> <span class="n">gdf_points</span>
 
-<div class="viewcode-block" id="POIDataset.from_overpass"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.from_overpass">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="POIDataset.from_overpass"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.from_overpass">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_overpass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="n">defaults</span><span class="o">.</span><span class="n">TMP_DIR</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Initialize POIDataset from Overpass API query. Any returned nodes or closed ways with `center` attributes will be included in the dataset.</span>
@@ -270,7 +270,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_features</span><span class="p">(</span><span class="n">pois</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">out_name</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="s1">&#39;epsg:4326&#39;</span><span class="p">})</span> \
                   <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="POIDataset.from_file"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="POIDataset.from_file"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.from_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initialize POIDataset from file&#39;&#39;&#39;</span>
 
@@ -279,7 +279,7 @@
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">gdf_points</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="POIDataset.from_features"><a class="viewcode-back" href="../../index.html#tebetebe.POIDataset.POIDataset.from_features">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="POIDataset.from_features"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.from_features">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_features</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initialize POIDataset from GeoJSON features&#39;&#39;&#39;</span>
 

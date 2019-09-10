@@ -237,7 +237,7 @@ python3 setup.py install
 </div>
 <div class="section" id="scenario-comparison">
 <h2>Scenario Comparison<a class="headerlink" href="#scenario-comparison" title="Permalink to this headline">¶</a></h2>
-<p>By comparing origin:destination routes between different scenarios, we gain some insight about how those scenarios affect transportation patterns.</p>
+<p>By comparing origin:destination routes between different scenarios, we gain insight about how changing a transportation scenario affects route patterns.</p>
 <p>Here, we route the homesteads in an 8km radius from a river crossing to the local primary and high schools, both in a normal walking scenario and a flood scenario. We then compare the routes between scenarios to determine the homesteads affected by flood and the routes both in normal and flood conditions.</p>
 <p>The normal walking scenario in this case is the standard default <cite>walk.lua</cite> from <cite>osrm-backend</cite>. The <cite>walk_flood.lua</cite> is the same scenario except it considers nodes with ford=yes to be a barrier.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tebetebe.analysis</span> <span class="k">import</span> <span class="n">ParallelScenarios</span><span class="p">,</span> <span class="n">RouteComparison</span>
@@ -260,31 +260,35 @@ python3 setup.py install
 <span class="n">origins</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="n">queries</span><span class="p">[</span><span class="s2">&quot;homesteads&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;homesteads&quot;</span><span class="p">)</span>
 <span class="n">dests</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="n">queries</span><span class="p">[</span><span class="s2">&quot;schools&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;schools&quot;</span><span class="p">)</span>
 
-<span class="c1">## Normal &amp; Flood scenarios</span>
-<span class="n">normal</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="s2">&quot;./profiles/walk_normal.lua&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
-<span class="n">flood</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="s2">&quot;./profiles/walk_flood.lua&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;flood&quot;</span><span class="p">)</span>
+<span class="c1">## Normal &amp; Flood scenarios. Pass along an extra parameter to osrm-routed</span>
+<span class="c1">## so that the max duration table size is enough for all origin:dest pairs</span>
+<span class="n">routed_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;max_table_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">origins</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dests</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span>
+
+<span class="n">normal</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="s2">&quot;./profiles/walk_normal.lua&quot;</span><span class="p">,</span>
+                         <span class="n">routed_args</span><span class="o">=</span><span class="n">routed_args</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+<span class="n">flood</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="s2">&quot;./profiles/walk_flood.lua&quot;</span><span class="p">,</span>
+                        <span class="n">routed_args</span><span class="o">=</span><span class="n">routed_args</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;flood&quot;</span><span class="p">)</span>
 
 <span class="c1">## Run normal and flood scenarios in parallel</span>
-<span class="n">parallel</span> <span class="o">=</span> <span class="n">ParallelScenarios</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">flood</span><span class="p">)</span>
-<span class="n">num_pairs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">origins</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dests</span><span class="p">)</span> <span class="c1">## pass max number of pairs to osrm-routed</span>
+<span class="n">parallel_scenarios</span> <span class="o">=</span> <span class="n">ParallelScenarios</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">flood</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">parallel</span><span class="p">(</span><span class="n">max_table_size</span><span class="o">=</span><span class="n">num_pairs</span><span class="p">)</span> <span class="k">as</span> <span class="n">scenarios</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">parallel_scenarios</span> <span class="k">as</span> <span class="n">scenarios</span><span class="p">:</span>
     <span class="c1">## Compare origin:dest routes</span>
     <span class="n">comparison</span> <span class="o">=</span> <span class="n">RouteComparison</span><span class="p">(</span><span class="n">origins</span><span class="p">,</span> <span class="n">dests</span><span class="p">)</span>
 
-    <span class="c1">## Routes that are different between scenarios (ie flood affected)</span>
+    <span class="c1">## Routes that are different between scenarios</span>
     <span class="n">flood_affected</span> <span class="o">=</span> <span class="n">comparison</span><span class="o">.</span><span class="n">get_difference</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">flood</span><span class="p">)</span>
 
     <span class="c1">## Point dataframe of all homesteads who are flood affected</span>
-    <span class="n">origins</span><span class="p">[</span><span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">affected</span><span class="p">[</span><span class="s1">&#39;origin_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())]</span> \
+    <span class="n">origins</span><span class="p">[</span><span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">flood_affected</span><span class="p">[</span><span class="s1">&#39;origin_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())]</span> \
         <span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;flood_affected_homesteads.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 
     <span class="c1">## Routes of all flood affected homesteads under normal conditions</span>
-    <span class="n">comparison</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">od_pairs</span><span class="o">=</span><span class="n">affected</span><span class="p">)</span> \
+    <span class="n">comparison</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">od_pairs</span><span class="o">=</span><span class="n">flood_affected</span><span class="p">)</span> \
         <span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;flood_affected_normal_routes.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 
     <span class="c1">## Routes of all flood affected homesteads under flood conditions</span>
-    <span class="n">comparison</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(</span><span class="n">flood</span><span class="p">,</span> <span class="n">od_pairs</span><span class="o">=</span><span class="n">affected</span><span class="p">)</span> \
+    <span class="n">comparison</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(</span><span class="n">flood</span><span class="p">,</span> <span class="n">od_pairs</span><span class="o">=</span><span class="n">flood_affected</span><span class="p">)</span> \
         <span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;flood_affected_flood_routes.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -315,9 +319,9 @@ AccessIsochrone is provided by the <a class="reference external" href="https://g
     <span class="n">contours</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;contour10.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-default" id="id14">
+<div class="figure align-default" id="id12">
 <a class="reference internal image-reference" href="_static/img/mbabane_isochrone.png"><img alt="_static/img/mbabane_isochrone.png" src="_static/img/mbabane_isochrone.png" style="width: 250px; height: 250px;" /></a>
-<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -413,40 +417,31 @@ into a routable OSRM file</p>
 <dt id="tebetebe.Scenario.Scenario">
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.Scenario.</code><code class="sig-name descname">Scenario</code><span class="sig-paren">(</span><em class="sig-param">route_network</em>, <em class="sig-param">routing_profile</em>, <em class="sig-param">name=None</em>, <em class="sig-param">algorithm='MLD'</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Scenario is an abstraction of the OSRM binaries in order to dissolve a
-route network and routing profile into a routable OSRM file</p>
-<p>ScenarioAPI is a context manager for the execution of the <cite>osrm-routed</cite> HTTP server,
-and provides a low-level API for querying that server</p>
-<p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
+<p>Scenario is an abstraction of OSRM binaries in order to compile, serve, and query
+a routable network based upon an OSM dataset and routing profile.</p>
+<p>A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The
+Scenario is compiled when called, and provides a context manager to serve the compiled
+Scenario which can then be queried with a low-level API.</p>
+<p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by
+the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>route_network</strong> (<em>str / RouteNetwork</em>) – Route network to be used in scenario</p></li>
 <li><p><strong>routing_profile</strong> (<em>str / RoutingProfile</em>) – Routing profile to be used in scenario</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Scenario name used in output file and log entries. If not supplied, it will be built based upon the route network &amp; routing profile names</p></li>
-<li><p><strong>algorithm</strong> (<em>str</em>) – Algorithm to be used (either “CH” or “MLD”)</p></li>
-<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to store files generated by osrm binaries</p></li>
-<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite scenario if .osrm* files already exist. Otherwise, the existing .osrm* files will be used.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em>) – Print output of OSRM compilation</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Scenario name used in output file and log entries. If not supplied, it will be built
+based upon the route network &amp; routing profile names</p></li>
+<li><p><strong>algorithm</strong> (<em>str</em><em>, </em><em>optional</em>) – Algorithm to be used (either “CH” or “MLD”)</p></li>
+<li><p><strong>tmp_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Temporary directory to store files generated by osrm binaries</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Overwrite scenario if .osrm* files already exist. Otherwise, the existing .osrm* files
+will be used.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print output of OSRM compilation</p></li>
+<li><p><strong>**kwargs</strong> – To pass any custom arguments to the OSRM executables (“osrm-routed”, “osrm-contract”, …)
+pass the kwarg “{executable}_args” (ex. “routed_args”, “contract_args”, …) with a dictionary
+of key:values to be passed</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="method">
-<dt id="tebetebe.Scenario.Scenario.compile">
-<code class="sig-name descname">compile</code><span class="sig-paren">(</span><em class="sig-param">extract_args={}</em>, <em class="sig-param">contract_args={}</em>, <em class="sig-param">partition_args={}</em>, <em class="sig-param">customize_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.compile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile route network and routing profile into a routable OSRM file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>extract_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-extract</p></li>
-<li><p><strong>contract_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-contract (algorithm=”CH” only)</p></li>
-<li><p><strong>partition_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-partition (algorithm=”MLD” only)</p></li>
-<li><p><strong>customize_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – Any additional arguments to pass to osrm-customize (algorithm=”MLD” only)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="tebetebe.Scenario.Scenario.get_name">
 <code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.get_name" title="Permalink to this definition">¶</a></dt>
@@ -456,7 +451,7 @@ and provides a low-level API for querying that server</p>
 <dl class="method">
 <dt id="tebetebe.Scenario.Scenario.get_path">
 <code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.get_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Scenario Path</p>
+<dd><p>Return the Scenario path</p>
 </dd></dl>
 
 <dl class="method">
@@ -516,12 +511,6 @@ returning the reponse in JSON</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tebetebe.Scenario.Scenario.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile and run scenario, and return ScenarioAPI. Any <cite>**kwargs</cite> are passed as arguments to osrm-routed. This can also be called by Scenario(<a href="#id4"><span class="problematic" id="id5">**</span></a>kwargs)</p>
 </dd></dl>
 
 <dl class="method">
@@ -714,11 +703,11 @@ destination, and waypoints in routing.</p>
 <p>Many of the <cite>tebetebe</cite> operations require writing a file to disk in order to be passed
 to the OSRM binaries, and it’s useful to set a uniform <cite>tmp_dir</cite> for a particular set of
 commands so that all of these files generated by those commands are contained in the same place.</p>
-<p>In addition to <cite>tmp_dir</cite>, any <a href="#id6"><span class="problematic" id="id7">**</span></a>kwarg passed to Environment will be passed to all of the
+<p>In addition to <cite>tmp_dir</cite>, any <a href="#id4"><span class="problematic" id="id5">**</span></a>kwarg passed to Environment will be passed to all of the
 classes available under the Environment. Useful examples of these kwargs include <cite>verbose</cite>
 and <cite>overwrite</cite></p>
-<p>Any <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs passed to the Environment classes will override the default Environment
-variables if there is a duplicate.</p>
+<p>Any <a href="#id6"><span class="problematic" id="id7">**</span></a>kwargs set in Environment classes will be overridden if the argument is specified during
+class initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – Arbitrary keyword arguments to be passed to each class available under the Environment</p>
@@ -734,7 +723,7 @@ variables if there is a duplicate.</p>
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.OSRM.</code><code class="sig-name descname">OSRM</code><span class="sig-paren">(</span><em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class wrapper around all the osrm-* binaries. All functions accept
-additional <a href="#id10"><span class="problematic" id="id11">**</span></a>kwargs to be passed upon execution. This class is used in
+additional <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs to be passed upon execution. This class is used in
 the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -778,7 +767,7 @@ the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id12"><span class="problematic" id="id13">*</span></a>.osrm</p></li>
+<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id10"><span class="problematic" id="id11">*</span></a>.osrm</p></li>
 <li><p><strong>ready_callback</strong> (<em>function</em>) – Function to be called when osrm-routed is ready for HTTP requests</p></li>
 <li><p><strong>done_callback</strong> (<em>function</em>) – Function to be called when osrm-routed has exited</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – <cite>osrm-routed</cite> output is so verbose it is default off even if the parent class <cite>verbose=True</cite>. Set this to true if you want to see <cite>osrm-routed</cite> output anyway.</p></li>
@@ -852,12 +841,6 @@ comparing routing analysis from multiple scenarios side by side.</p>
 <dd class="field-odd"><p><strong>*args</strong> – Arbitrary number of scenarios to be compiled, then executed in parallel</p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="tebetebe.analysis.ParallelScenarios.ParallelScenarios.get_scenarios">
-<code class="sig-name descname">get_scenarios</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/analysis/ParallelScenarios.html#ParallelScenarios.get_scenarios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.analysis.ParallelScenarios.ParallelScenarios.get_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return dictionary of scenarios</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -871,8 +854,8 @@ comparing routing analysis from multiple scenarios side by side.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>origins</strong> (<a class="reference internal" href="#tebetebe.POIDataset.POIDataset" title="tebetebe.POIDataset.POIDataset"><em>POIDataset</em></a>) – Points to be used as the origins in route comparison</p></li>
-<li><p><strong>dests</strong> (<a class="reference internal" href="#tebetebe.POIDataset.POIDataset" title="tebetebe.POIDataset.POIDataset"><em>POIDataset</em></a>) – Points to be used as the destinations in route comparison</p></li>
+<li><p><strong>origins</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.POIDataset.POIDataset" title="tebetebe.POIDataset.POIDataset"><em>POIDataset</em></a>) – Points to be used as the origins in route comparison</p></li>
+<li><p><strong>dests</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.POIDataset.POIDataset" title="tebetebe.POIDataset.POIDataset"><em>POIDataset</em></a>) – Points to be used as the destinations in route comparison</p></li>
 <li><p><strong>origins_id_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Column in <cite>origins</cite> dataset to be used as ID. Must be unique. If not specified, the index will be used</p></li>
 <li><p><strong>dests_id_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Column in <cite>dests</cite> dataset to be used as ID. Must be unique. If not specified, the index will be used</p></li>
 <li><p><strong>cache</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to cache time matrices</p></li>
@@ -892,7 +875,7 @@ comparing routing analysis from multiple scenarios side by side.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario to run calculate the duration matrix on</p></li>
+<li><p><strong>scenario</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario to run calculate the duration matrix on</p></li>
 <li><p><strong>melted</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the matrix should be returned as a matrix DF, or melted into <cite>origin_id</cite> <cite>dest_id</cite> and <cite>duration</cite> columns</p></li>
 </ul>
 </dd>
@@ -929,7 +912,7 @@ comparing routing analysis from multiple scenarios side by side.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario on which the origin:dest routes will be calculated</p></li>
+<li><p><strong>scenario</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario on which the origin:dest routes will be calculated</p></li>
 <li><p><strong>od_pairs</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – DataFrame of origin:dest pairs in two columns <cite>origin_id</cite> and <cite>dest_id</cite> for calculation. If not specified, all pairwise origin:dest routes will be calculated.</p></li>
 </ul>
 </dd>
