@@ -161,7 +161,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>osm_path</strong> – Path to <a href="#id1"><span class="problematic" id="id2">*</span></a>.osm{.pbf} dataset</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Name of OSMDataset</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of OSMDataset. If not provided, the .osm filename is used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -214,7 +214,7 @@ into a routable OSRM file</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lua_path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename will be used.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename is used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -241,6 +241,9 @@ into a routable OSRM file</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Scenario is an abstraction of the OSRM binaries in order to dissolve a
 route network and routing profile into a routable OSRM file</p>
+<p>ScenarioAPI is a context manager for the execution of the <cite>osrm-routed</cite> HTTP server,
+and provides a low-level API for querying that server</p>
+<p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -283,37 +286,14 @@ route network and routing profile into a routable OSRM file</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.Scenario.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile and run scenario, and return ScenarioAPI. Any <cite>**kwargs</cite> are passed as arguments to osrm-routed. This can also be called by Scenario(<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="tebetebe.Scenario.ScenarioAPI">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.Scenario.</code><code class="sig-name descname">ScenarioAPI</code><span class="sig-paren">(</span><em class="sig-param">scenario</em>, <em class="sig-param">call_opts={}</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#ScenarioAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.AbstractContextManager</span></code></p>
-<p>ScenarioAPI is a context manager for the execution of the <cite>osrm-routed</cite> HTTP server,
-and provides a low-level API for querying that server</p>
-<p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>scenario</strong> (<a class="reference internal" href="#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario for which the API is to query</p></li>
-<li><p><strong>call_opts</strong> (<em>dict</em>) – Any additional parameters to be passed to osrm-routed</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.is_alive">
-<code class="sig-name descname">is_alive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#ScenarioAPI.is_alive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.is_alive" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.is_alive">
+<code class="sig-name descname">is_alive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.is_alive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.is_alive" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if Scenario process is running, False otherwise</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.match">
-<code class="sig-name descname">match</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">timestamps=None</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">gaps='split'</em>, <em class="sig-param">tidy=False</em>, <em class="sig-param">waypoints=None</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.match" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.match">
+<code class="sig-name descname">match</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">timestamps=None</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">gaps='split'</em>, <em class="sig-param">tidy=False</em>, <em class="sig-param">waypoints=None</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.Scenario.match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function wrapping OSRM ‘match’ function, returning the reponse in JSON</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -343,8 +323,8 @@ and provides a low-level API for querying that server</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.nearest">
-<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">number=1</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.nearest" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.nearest">
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">number=1</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.Scenario.nearest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Useless function wrapping OSRM ‘nearest’ function,
 returning the reponse in JSON</p>
 <dl class="field-list simple">
@@ -365,8 +345,14 @@ returning the reponse in JSON</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.simple_route">
-<code class="sig-name descname">simple_route</code><span class="sig-paren">(</span><em class="sig-param">coord_dest</em>, <em class="sig-param">coord_intermediate=None</em>, <em class="sig-param">alternatives=False</em>, <em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">annotations='true'</em>, <em class="sig-param">continue_straight='default'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.simple_route" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile and run scenario, and return ScenarioAPI. Any <cite>**kwargs</cite> are passed as arguments to osrm-routed. This can also be called by Scenario(<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.Scenario.Scenario.simple_route">
+<code class="sig-name descname">simple_route</code><span class="sig-paren">(</span><em class="sig-param">coord_dest</em>, <em class="sig-param">coord_intermediate=None</em>, <em class="sig-param">alternatives=False</em>, <em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">annotations='true'</em>, <em class="sig-param">continue_straight='default'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.Scenario.simple_route" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function wrapping OSRM ‘viaroute’ function and returning the JSON reponse
 with the route_geometry decoded (in WKT or WKB) if needed.</p>
 <dl class="field-list simple">
@@ -398,8 +384,8 @@ defined in <cite>geometry</cite>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.table">
-<code class="sig-name descname">table</code><span class="sig-paren">(</span><em class="sig-param">coords_dest=None</em>, <em class="sig-param">ids_origin=None</em>, <em class="sig-param">ids_dest=None</em>, <em class="sig-param">output='np'</em>, <em class="sig-param">minutes=False</em>, <em class="sig-param">annotations='duration'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.table" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.table">
+<code class="sig-name descname">table</code><span class="sig-paren">(</span><em class="sig-param">coords_dest=None</em>, <em class="sig-param">ids_origin=None</em>, <em class="sig-param">ids_dest=None</em>, <em class="sig-param">output='np'</em>, <em class="sig-param">minutes=False</em>, <em class="sig-param">annotations='duration'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.Scenario.table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function wrapping OSRM ‘table’ function in order to get a matrix of
 time distance as a numpy array or as a DataFrame</p>
 <dl class="field-list simple">
@@ -452,8 +438,8 @@ a list of snapped destination coordinates.</p></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tebetebe.Scenario.ScenarioAPI.trip">
-<code class="sig-name descname">trip</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">roundtrip=True</em>, <em class="sig-param">source='any'</em>, <em class="sig-param">destination='any'</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.ScenarioAPI.trip" title="Permalink to this definition">¶</a></dt>
+<dt id="tebetebe.Scenario.Scenario.trip">
+<code class="sig-name descname">trip</code><span class="sig-paren">(</span><em class="sig-param">steps=False</em>, <em class="sig-param">output='full'</em>, <em class="sig-param">geometry='polyline'</em>, <em class="sig-param">overview='simplified'</em>, <em class="sig-param">roundtrip=True</em>, <em class="sig-param">source='any'</em>, <em class="sig-param">destination='any'</em>, <em class="sig-param">annotations='false'</em>, <em class="sig-param">url_config=http://localhost:5000/*/v1/driving</em>, <em class="sig-param">send_as_polyline=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tebetebe.Scenario.Scenario.trip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function wrapping OSRM ‘trip’ function and returning the JSON reponse
 with the route_geometry decoded (in WKT or WKB) if needed.</p>
 <dl class="field-list simple">

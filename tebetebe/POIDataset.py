@@ -84,7 +84,7 @@ class POIDataset(GeoDataFrame):
                 out_file.unlink()
             else:
                 logger.info("Using existing POIDataset {}".format(out_file))
-                return cls.from_file(out_file, name=out_name)
+                return cls.from_file(out_file, name=out_name).set_index("id")
 
 
         logger.info("Downloading POIDataset {}".format(name))
@@ -124,7 +124,8 @@ class POIDataset(GeoDataFrame):
         out_folder.mkdir(parents=True, exist_ok=True)
         out_file.write_text(gj.dumps(pois))
 
-        return cls.from_features(pois.features, name=out_name, crs={'init': 'epsg:4326'})
+        return cls.from_features(pois.features, name=out_name, crs={'init': 'epsg:4326'}) \
+                  .set_index("id")
 
     @classmethod
     def from_file(cls, path, name=None, **kwargs):

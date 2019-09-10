@@ -2,6 +2,7 @@
 
 import shutil
 import socket
+import hashlib
 
 def hash_(_str):
     return hashlib.md5(_str.encode()).hexdigest()

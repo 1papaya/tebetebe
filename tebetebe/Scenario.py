@@ -8,6 +8,7 @@ import time
 import sys
 import sh
 
+from urllib.error import HTTPError
 from contextlib import AbstractContextManager
 from sh import CommandNotFound
 from functools import partial
@@ -23,6 +24,12 @@ class Scenario():
     """
     Scenario is an abstraction of the OSRM binaries in order to dissolve a
     route network and routing profile into a routable OSRM file
+
+    ScenarioAPI is a context manager for the execution of the `osrm-routed` HTTP server,
+    and provides a low-level API for querying that server
+
+    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by the `python-osrm` module (https://github.com/ustroetz/python-osrm)
+
 
     Parameters
     ----------
@@ -73,13 +80,8 @@ class Scenario():
         self.path = self.tmp_dir / self.name / "{}.osrm".format(self.name)
         self.path.parent.mkdir(parents=True, exist_ok=True) # Make sure output_dir exists
 
-    def get_name(self):
-        """Return the Scenario name"""
-        return self.name
-
-    def get_path(self):
-        """Return the Scenario Path"""
-        return self.path
+    ##
+    ## Scenario compilation
 
     def compile(self, extract_args = {}, contract_args = {},
                 partition_args = {}, customize_args = {}):
@@ -146,47 +148,65 @@ class Scenario():
             ## TODO custom handle more common exception
             self.log.error(exc)
 
-    def run(self, **kwargs):
-        '''Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)'''
+    ##
+    ## Context Manager for running Scenario HTTP server
 
-        ## Compile scenario
+    def __enter__(self):
+        self.routed_opts["port"] = utils.find_open_port()
+        self.routed_opts["algorithm"] = self.algorithm
+        self.routed_opts["dataset_name"] = self.name
+
+        ## Point the osrm http api to correct port
+        self._set_config(self.routed_opts["port"])
+        self.ready = False
+
+        ## Start up OSRM Server
         try:
-            self.compile()
-            return ScenarioAPI(self, call_opts={**kwargs})
+            ## Callback to execute when OSRM process is ready to receive http requests
+            def ready_callback(process):
+                self.ready = True
+
+            ## Callback when command exits
+            def done_callback(cmd, success, exit_code):
+                ## -9 = SIGKILL = it was (probably) killed by this script. aka, this is normal.
+                if exit_code != -9:
+                    self.log.error("{}: Scenario process exited with exit code {}".format(self.name, exit_code))
+                    self.log.error("{}: Command: {}".format(self.name, cmd))
+
+
+            self.log.info("{}: Initializing scenario".format(self.name))
+            self.process = self.OSRM.routed(self.path,
+                                            ready_callback,
+                                            done_callback,
+                                            **self.routed_opts)
+
         except Exception as exc:
             self.log.error(exc)
+            pass
 
-    ## Alias for calling
-    __call__ = run
+        ## Wait until OSRM-routed is ready before returning the api
+        ## TODO better way to do this
+        while not self.ready:
+            time.sleep(1)
 
-class ScenarioAPI(AbstractContextManager):
-    '''
-    ScenarioAPI is a context manager for the execution of the `osrm-routed` HTTP server,
-    and provides a low-level API for querying that server
+        self.log.info("{}: Ready for requests".format(self.name))
 
-    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by the `python-osrm` module (https://github.com/ustroetz/python-osrm)
+        return self
 
-    Parameters
-    ----------
-    scenario : Scenario
-        Scenario for which the API is to query
-    call_opts : dict
-        Any additional parameters to be passed to osrm-routed
-    '''
+    def __exit__(self, exc_type, exc_value, traceback):
+        ## TODO handle common exceptions
+        if exc_type:
+            if exc_type is HTTPError:
+                self.log.error(exc_value)
+                return True
+            else:
+                self.log.error("{} {} {}".format(exc_type, exc_value, traceback))
 
-    ## These are here so sphinx pulls the API documentation from python-osrm
-    simple_route = osrm.simple_route
-    nearest = osrm.nearest
-    match = osrm.match
-    table = osrm.table
-    trip = osrm.trip
-
-    def __init__(self, scenario, call_opts={}, **kwargs):
-        super(ScenarioAPI, self).__init__()
-
-        self.log = logging.getLogger(defaults.LOGGER)
-        self.scenario = scenario
-        self.call_opts = call_opts
+        ## Kill the OSRM process
+        try:
+            self.process.kill()
+        except:
+            pass
 
     def is_alive(self):
         """True if Scenario process is running, False otherwise"""
@@ -204,54 +224,40 @@ class ScenarioAPI(AbstractContextManager):
         self.table = partial(osrm.table, url_config=self.config)
         self.trip = partial(osrm.trip, url_config=self.config)
 
-    def __enter__(self):
-        self.call_opts["port"] = utils.find_open_port()
-        self.call_opts["algorithm"] = self.scenario.algorithm
-        self.call_opts["dataset_name"] = self.scenario.name
+    ##
+    ## Call and run
 
-        ## Point the osrm http api to correct port
-        self._set_config(self.call_opts["port"])
-        self.ready = False
+    def run(self, **kwargs):
+        '''Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)'''
 
-        ## Start up OSRM Server
+        ## Compile scenario
         try:
-            ## Callback to execute when OSRM process is ready to receive http requests
-            def ready_callback(process):
-                self.ready = True
+            self.compile()
+            self.routed_opts = {**kwargs}
 
-            ## Callback when command exits
-            def done_callback(cmd, success, exit_code):
-                ## -9 = SIGKILL = it was (probably) killed by this script. aka, this is normal.
-                if exit_code != -9:
-                    self.log.error("{}: Scenario process exited with exit code {}".format(self.scenario.name, exit_code))
-                    self.log.error("{}: Command: {}".format(self.scenario.name, cmd))
-
-
-            self.log.info("{}: Initializing scenario".format(self.scenario.name))
-            self.process = self.scenario.OSRM.routed(self.scenario.path,
-                                                     ready_callback,
-                                                     done_callback,
-                                                     **self.call_opts)
+            return self
 
         except Exception as exc:
             self.log.error(exc)
+       
+    ## Alias for calling
+    __call__ = run
 
-        ## Wait until OSRM-routed is ready before returning the api
-        ## TODO better way to do this
-        while not self.ready:
-            time.sleep(1)
+    ##
+    ## Convenience
 
-        self.log.info("{}: Ready for requests".format(self.scenario.name))
+    ## These are here so sphinx pulls the API documentation from python-osrm
+    simple_route = osrm.simple_route
+    nearest = osrm.nearest
+    match = osrm.match
+    table = osrm.table
+    trip = osrm.trip
 
-        return self
+    def get_name(self):
+        """Return the Scenario name"""
+        return self.name
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        ## TODO handle common exceptions
-        if exc_type:
-            self.log.error("{} {} {}".format(exc_type, exc_value, traceback))
+    def get_path(self):
+        """Return the Scenario Path"""
+        return self.path
 
-        ## Kill the OSRM process
-        try:
-            self.process.kill()
-        except:
-            pass

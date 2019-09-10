@@ -15,7 +15,7 @@ class RoutingProfile():
     lua_path: str
         Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.
     name: str, optional
-        Name of routing profile. If not provided, the .lua filename will be used.
+        Name of routing profile. If not provided, the .lua filename is used.
     '''
 
     def __init__(self, lua_path, name=None, **kwargs):
@@ -24,7 +24,7 @@ class RoutingProfile():
 
         ## Check path exists
         if not self.path.is_file():
-            raise FileNotFoundError("Routing Profile Not Found ({})".format(path))
+            raise FileNotFoundError("Routing Profile Not Found ({})".format(lua_path))
 
         ## Set profile name to lua filename if not specified
         self.name = name if name else self.path.stem

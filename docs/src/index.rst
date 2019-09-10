@@ -38,10 +38,21 @@ This example downloads eSwatini highways from the Overpass API and uses the `def
 
 .. literalinclude:: ../../examples/simple_scenario.py
 
+Scenario Comparison
+****************
+
+By comparing origin:destination routes between different scenarios, we gain some insight about how those scenarios affect transportation patterns.
+
+Here, we route the homesteads in an 8km radius from a river crossing to the local primary and high schools, both in a normal walking scenario and a flood scenario. We then compare the routes between scenarios to determine the homesteads affected by flood and the routes both in normal and flood conditions.
+
+The normal walking scenario in this case is the standard default `walk.lua` from `osrm-backend`. The `walk_flood.lua` is the same scenario except it considers nodes with ford=yes to be a barrier.
+
+.. literalinclude:: ../../examples/scenario_comparison.py
+
 Access Isochrones
 ***************
 
-Here a route network is extracted from the eSwatini `GeoFabrik extract <http://download.geofabrik.de>`_ and calculates an AccessIsochrone using the `default car profile <https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua>`_ from `osrm-backend`.
+Here a route network is extracted from the eSwatini `GeoFabrik extract <http://download.geofabrik.de>`_ an AccessIsochrone is calculated using the `default car profile <https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua>`_ from `osrm-backend`.
 AccessIsochrone is provided by the `python-osrm package <https://github.com/ustroetz/python-osrm>`_.
 
 .. literalinclude:: ../../examples/access_isochrones.py
@@ -120,3 +131,20 @@ tb.analysis.AccessIsochrone
    :undoc-members:
    :show-inheritance:
 
+
+tb.analysis.ParallelScenarios
+*********************
+
+.. automodule:: tebetebe.analysis.ParallelScenarios
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+tb.analysis.RouteComparison
+*********************
+
+.. automodule:: tebetebe.analysis.RouteComparison
+   :members:
+   :undoc-members:
+   :show-inheritance:

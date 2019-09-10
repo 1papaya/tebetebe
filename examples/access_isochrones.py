@@ -8,7 +8,7 @@ mbabane = (31.1367, -26.3054)
 
 ## Initialize scenario with extract from GeoFabrik and car profile
 ## http://download.geofabrik.de/africa/swaziland-latest.osm.pbf
-scenario = tb_env.Scenario("./tmp/access_isochrones/swaziland-latest.osm.pbf",
+scenario = tb_env.Scenario("./tmp/swaziland-latest.osm.pbf",
                            "./profiles/car.lua")
 
 ## Run scenario

@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tebetebe.analysis.RouteComparison &mdash; tebetebe  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tebetebe
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tebetebe</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tebetebe.analysis.RouteComparison</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tebetebe.analysis.RouteComparison</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">defaults</span>
+
+<span class="kn">from</span> <span class="nn">shapely.wkt</span> <span class="k">import</span> <span class="n">loads</span> <span class="k">as</span> <span class="n">wktToLineString</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<div class="viewcode-block" id="RouteComparison"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison">[docs]</a><span class="k">class</span> <span class="nc">RouteComparison</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare route differences between scenarios</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    origins: POIDataset</span>
+<span class="sd">        Points to be used as the origins in route comparison</span>
+<span class="sd">    dests: POIDataset</span>
+<span class="sd">        Points to be used as the destinations in route comparison</span>
+<span class="sd">    origins_id_col: str, optional</span>
+<span class="sd">        Column in `origins` dataset to be used as ID. Must be unique. If not specified, the index will be used</span>
+<span class="sd">    dests_id_col: str, optional</span>
+<span class="sd">        Column in `dests` dataset to be used as ID. Must be unique. If not specified, the index will be used</span>
+<span class="sd">    cache: bool, optional</span>
+<span class="sd">        Whether to cache time matrices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origins</span><span class="p">,</span> <span class="n">dests</span><span class="p">,</span> <span class="n">origins_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dests_id_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="c1">## Set POIDataset indexes to id cols if specified, otherwise use row index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origins</span> <span class="o">=</span> <span class="n">origins</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">origins_id_col</span><span class="p">)</span> <span class="k">if</span> <span class="n">origins_id_col</span> <span class="k">else</span> <span class="n">origins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dests</span> <span class="o">=</span> <span class="n">dests</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">dests_id_col</span><span class="p">)</span> <span class="k">if</span> <span class="n">dests_id_col</span> <span class="k">else</span> <span class="n">dests</span>
+
+        <span class="c1">## Get a DataFrame of all origin_id:dest_id pairs; od=origin:dest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">od_pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_index_pairs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dests</span><span class="p">)</span> \
+                            <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;origin_id&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;dest_id&quot;</span><span class="p">})</span>
+
+        <span class="c1">## Set up cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1">##</span>
+    <span class="c1">## Base Functions</span>
+
+<div class="viewcode-block" id="RouteComparison.get_duration_matrix"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison.get_duration_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_duration_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">melted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a duration matrix between `origins` and `dests`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scenario: Scenario</span>
+<span class="sd">            Scenario to run calculate the duration matrix on</span>
+<span class="sd">        melted: bool, optional</span>
+<span class="sd">            Whether the matrix should be returned as a matrix DF, or melted into `origin_id` `dest_id` and `duration` columns</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Duration Matrix DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+
+        <span class="c1">## If hasn&#39;t been computed or cache is off</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration_matrix</span><span class="p">:</span>
+
+            <span class="n">origin_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">origin_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="n">dest_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dests</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">dest_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dests</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">origin_snap</span><span class="p">,</span> <span class="n">dest_snap</span><span class="p">)</span> \
+                <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">origin_coords</span><span class="p">,</span>
+                                 <span class="n">coords_dest</span> <span class="o">=</span> <span class="n">dest_coords</span><span class="p">,</span>
+                                 <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;np&quot;</span><span class="p">)</span>
+
+            <span class="c1">## Transform matrix to proper dataframe with index&amp;columns</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">dest_ids</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">origin_ids</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">duration_matrix</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">matrix</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration_matrix</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">melted</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_melt_duration_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_matrix</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">scenario</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RouteComparison.get_routes"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison.get_routes">[docs]</a>    <span class="k">def</span> <span class="nf">get_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">od_pairs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get routes between origins and dests</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scenario: Scenario</span>
+<span class="sd">            Scenario on which the origin:dest routes will be calculated</span>
+<span class="sd">        od_pairs: pd.DataFrame, optional</span>
+<span class="sd">            DataFrame of origin:dest pairs in two columns `origin_id` and `dest_id` for calculation. If not specified, all pairwise origin:dest routes will be calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GeoDataFrame</span>
+<span class="sd">           GDF with duration, distance, and route geometry for each origin:dest pair</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+
+        <span class="n">origins_geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;origin_geom&quot;</span><span class="p">)</span>
+        <span class="n">dests_geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dests</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;dest_geom&quot;</span><span class="p">)</span>
+
+        <span class="c1">## If origins_dests pairs are not given, use all </span>
+        <span class="k">if</span> <span class="n">od_pairs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">od_pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">od_pairs</span>
+
+        <span class="c1">## Assemble dataframe with `origin_id`, `dest_id`, `origin_geom`, `dest_geom`</span>
+        <span class="n">routes</span> <span class="o">=</span> <span class="n">od_pairs</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">origins_geom</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;origin_id&quot;</span><span class="p">,</span>
+                                <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> \
+                         <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dests_geom</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;dest_id&quot;</span><span class="p">,</span>
+                                <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1">## Calculate an OSRM simple_route for a given diff_routes row</span>
+        <span class="k">def</span> <span class="nf">route_from_row</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+            <span class="n">route</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">simple_route</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;origin_geom&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;dest_geom&quot;</span><span class="p">],</span>
+                                     <span class="n">geometry</span> <span class="o">=</span> <span class="s1">&#39;wkt&#39;</span><span class="p">,</span> <span class="n">overview</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">)</span>
+
+            <span class="n">r_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_duration&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_distance&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="s2">&quot;geometry&quot;</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">route</span><span class="p">[</span><span class="s1">&#39;routes&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span>
+                              <span class="n">route</span><span class="p">[</span><span class="s1">&#39;routes&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;distance&#39;</span><span class="p">],</span>
+                              <span class="n">wktToLineString</span><span class="p">(</span><span class="n">route</span><span class="p">[</span><span class="s2">&quot;routes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">])],</span>
+                             <span class="n">index</span><span class="o">=</span><span class="n">r_index</span><span class="p">)</span>
+
+        <span class="n">route_info</span> <span class="o">=</span> <span class="n">routes</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">route_from_row</span><span class="p">(</span><span class="n">scenario</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span>
+                                  <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">## Drop point geoms and scenario duration from routes DF (if exists. it will be added</span>
+        <span class="c1">## by route_info anyway). Then, join to route info returned, then return GDF</span>
+        <span class="n">routes</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;origin_geom&#39;</span><span class="p">,</span> <span class="s1">&#39;dest_geom&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_duration&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario</span><span class="o">.</span><span class="n">get_name</span><span class="p">())],</span>
+                    <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">routes</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">route_info</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RouteComparison.get_duration_table"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison.get_duration_table">[docs]</a>    <span class="k">def</span> <span class="nf">get_duration_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get route duration table for multiple scenarios</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args</span>
+<span class="sd">            Arbitrary number of scenarios to run duration table</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DataFrame</span>
+<span class="sd">            DF of origin:dest pairs and durations for each scenario</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_duration_matrix</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">melted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_duration_matrix</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">s_idx</span><span class="p">],</span> <span class="n">melted</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">table</span></div>
+
+    <span class="c1">##</span>
+    <span class="c1">## Higher level</span>
+
+<div class="viewcode-block" id="RouteComparison.get_difference"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison.get_difference">[docs]</a>    <span class="k">def</span> <span class="nf">get_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario0</span><span class="p">,</span> <span class="n">scenario1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get DF of origin:dest pairs whos routes differ between scenarios&quot;&quot;&quot;</span>
+        <span class="n">duration_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_duration_table</span><span class="p">(</span><span class="n">scenario0</span><span class="p">,</span> <span class="n">scenario1</span><span class="p">)</span>
+
+        <span class="n">s0_duration</span> <span class="o">=</span> <span class="n">duration_table</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_duration&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario0</span><span class="o">.</span><span class="n">get_name</span><span class="p">())]</span>
+        <span class="n">s1_duration</span> <span class="o">=</span> <span class="n">duration_table</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_duration&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario1</span><span class="o">.</span><span class="n">get_name</span><span class="p">())]</span>
+
+        <span class="k">return</span> <span class="n">duration_table</span><span class="p">[</span><span class="n">s0_duration</span> <span class="o">!=</span> <span class="n">s1_duration</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RouteComparison.get_same"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.RouteComparison.RouteComparison.get_same">[docs]</a>    <span class="k">def</span> <span class="nf">get_same</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario0</span><span class="p">,</span> <span class="n">scenario1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get DF of origin:dest pairs whos routes are the same between scenarios&quot;&quot;&quot;</span>
+        <span class="n">duration_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_duration_table</span><span class="p">(</span><span class="n">scenario0</span><span class="p">,</span> <span class="n">scenario1</span><span class="p">)</span>
+
+        <span class="n">s0_duration</span> <span class="o">=</span> <span class="n">duration_table</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_duration&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario0</span><span class="o">.</span><span class="n">get_name</span><span class="p">())]</span>
+        <span class="n">s1_duration</span> <span class="o">=</span> <span class="n">duration_table</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_duration&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario1</span><span class="o">.</span><span class="n">get_name</span><span class="p">())]</span>
+
+        <span class="k">return</span> <span class="n">duration_table</span><span class="p">[</span><span class="n">s0_duration</span> <span class="o">==</span> <span class="n">s1_duration</span><span class="p">]</span></div>
+
+    <span class="c1">##</span>
+    <span class="c1">## Utils</span>
+
+    <span class="k">def</span> <span class="nf">_get_index_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df0</span><span class="p">,</span> <span class="n">df1</span><span class="p">):</span>
+        <span class="n">df0_ids</span> <span class="o">=</span> <span class="n">df0</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">df1_ids</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">df0_ids</span><span class="p">,</span> <span class="n">df1_ids</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_melt_duration_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">scenario</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Melt a duration matrix into an origin_id:dest_id DF with duration&quot;&quot;&quot;</span>
+
+        <span class="n">index_rename</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;level_0&quot;</span><span class="p">:</span> <span class="s2">&quot;origin_id&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;level_1&quot;</span><span class="p">:</span> <span class="s2">&quot;dest_id&quot;</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">matrix</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span> \
+                             <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+                                 <span class="o">**</span><span class="n">index_rename</span><span class="p">,</span>
+                                 <span class="o">**</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_duration&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scenario</span><span class="o">.</span><span class="n">get_name</span><span class="p">())}</span>
+                             <span class="p">})</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, 1papaya
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

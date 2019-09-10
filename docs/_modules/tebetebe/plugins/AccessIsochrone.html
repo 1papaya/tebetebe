@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tebetebe.analysis.AccessIsochrone &mdash; tebetebe  documentation</title>
+  <title>tebetebe.plugins.AccessIsochrone &mdash; tebetebe  documentation</title>
   
 
   
@@ -125,7 +125,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>tebetebe.analysis.AccessIsochrone</li>
+      <li>tebetebe.plugins.AccessIsochrone</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -140,11 +140,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tebetebe.analysis.AccessIsochrone</h1><div class="highlight"><pre>
+  <h1>Source code for tebetebe.plugins.AccessIsochrone</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">osrm</span> <span class="k">import</span> <span class="n">AccessIsochrone</span> <span class="k">as</span> <span class="n">OSRMAccessIsochrone</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">MultiPolygon</span>
 
-<div class="viewcode-block" id="AccessIsochrone"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone">[docs]</a><span class="k">class</span> <span class="nc">AccessIsochrone</span><span class="p">(</span><span class="n">OSRMAccessIsochrone</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone"><a class="viewcode-back" href="../../../index.html#tebetebe.plugins.AccessIsochrone.AccessIsochrone">[docs]</a><span class="k">class</span> <span class="nc">AccessIsochrone</span><span class="p">(</span><span class="n">OSRMAccessIsochrone</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute an access isochrone from an origin point with a given `ScenarioAPI`</span>
 
@@ -164,19 +164,19 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">AccessIsochrone</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point_origin</span><span class="p">,</span> <span class="n">points_grid</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
                                               <span class="n">url_config</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AccessIsochrone.get_center"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.get_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone.get_center"><a class="viewcode-back" href="../../../index.html#tebetebe.plugins.AccessIsochrone.AccessIsochrone.get_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return center point used in isochrone calculations&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_point</span></div>
 
-<div class="viewcode-block" id="AccessIsochrone.get_grid"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.get_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone.get_grid"><a class="viewcode-back" href="../../../index.html#tebetebe.plugins.AccessIsochrone.AccessIsochrone.get_grid">[docs]</a>    <span class="k">def</span> <span class="nf">get_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return GeoDataFrame of grid used in duration calculations, snapped to the road network&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span></div>
 
-<div class="viewcode-block" id="AccessIsochrone.get_durations"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.get_durations">[docs]</a>    <span class="k">def</span> <span class="nf">get_durations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone.get_durations"><a class="viewcode-back" href="../../../index.html#tebetebe.plugins.AccessIsochrone.AccessIsochrone.get_durations">[docs]</a>    <span class="k">def</span> <span class="nf">get_durations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return durations table retrieved from OSRM&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span></div>
 
-<div class="viewcode-block" id="AccessIsochrone.render_contour"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.render_contour">[docs]</a>    <span class="k">def</span> <span class="nf">render_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_levels</span><span class="p">):</span>
+<div class="viewcode-block" id="AccessIsochrone.render_contour"><a class="viewcode-back" href="../../../index.html#tebetebe.plugins.AccessIsochrone.AccessIsochrone.render_contour">[docs]</a>    <span class="k">def</span> <span class="nf">render_contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_levels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return GeoDataFrame of MultiPolygon contours for a specified number of levels &quot;&quot;&quot;</span>
 
         <span class="n">contours</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">AccessIsochrone</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">render_contour</span><span class="p">(</span><span class="n">n_levels</span><span class="p">)</span>

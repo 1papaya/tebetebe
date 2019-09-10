@@ -17,8 +17,8 @@ class RouteNetwork():
     ----------
     osm_path:
         Path to *.osm{.pbf} dataset
-    name: str
-        Name of OSMDataset
+    name: str, optional
+        Name of OSMDataset. If not provided, the .osm filename is used.
     '''
 
     def __init__(self, osm_path, name=None, **kwargs):
@@ -28,7 +28,7 @@ class RouteNetwork():
 
         ## Check path exists
         if not self.path.is_file():
-            raise FileNotFoundError("RouteNetwork Not Found ({})".format(path))
+            raise FileNotFoundError("RouteNetwork Not Found ({})".format(osm_path))
 
         ## Set profile name to filename if not specified
         self.name = name if name else self.path.stem.split(".")[0]

@@ -151,6 +151,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">sh</span>
 
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="k">import</span> <span class="n">HTTPError</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">AbstractContextManager</span>
 <span class="kn">from</span> <span class="nn">sh</span> <span class="k">import</span> <span class="n">CommandNotFound</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
@@ -162,10 +163,16 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
 
-<div class="viewcode-block" id="Scenario"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario">[docs]</a><span class="k">class</span> <span class="nc">Scenario</span><span class="p">():</span>
+<div class="viewcode-block" id="Scenario"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario">[docs]</a><span class="k">class</span> <span class="nc">Scenario</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Scenario is an abstraction of the OSRM binaries in order to dissolve a</span>
 <span class="sd">    route network and routing profile into a routable OSRM file</span>
+
+<span class="sd">    ScenarioAPI is a context manager for the execution of the `osrm-routed` HTTP server,</span>
+<span class="sd">    and provides a low-level API for querying that server</span>
+
+<span class="sd">    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by the `python-osrm` module (https://github.com/ustroetz/python-osrm)</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -216,15 +223,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.osrm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Make sure output_dir exists</span>
 
-<div class="viewcode-block" id="Scenario.get_name"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the Scenario name&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+    <span class="c1">##</span>
+    <span class="c1">## Scenario compilation</span>
 
-<div class="viewcode-block" id="Scenario.get_path"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the Scenario Path&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
-
-<div class="viewcode-block" id="Scenario.compile"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario.compile">[docs]</a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extract_args</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">contract_args</span> <span class="o">=</span> <span class="p">{},</span>
+<div class="viewcode-block" id="Scenario.compile"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.compile">[docs]</a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extract_args</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">contract_args</span> <span class="o">=</span> <span class="p">{},</span>
                 <span class="n">partition_args</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">customize_args</span> <span class="o">=</span> <span class="p">{}):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        </span>
@@ -289,49 +291,67 @@
             <span class="c1">## TODO custom handle more common exception</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Scenario.run"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)&#39;&#39;&#39;</span>
+    <span class="c1">##</span>
+    <span class="c1">## Context Manager for running Scenario HTTP server</span>
 
-        <span class="c1">## Compile scenario</span>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_open_port</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span><span class="p">[</span><span class="s2">&quot;algorithm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1">## Point the osrm http api to correct port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">## Start up OSRM Server</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">ScenarioAPI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">call_opts</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+            <span class="c1">## Callback to execute when OSRM process is ready to receive http requests</span>
+            <span class="k">def</span> <span class="nf">ready_callback</span><span class="p">(</span><span class="n">process</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1">## Callback when command exits</span>
+            <span class="k">def</span> <span class="nf">done_callback</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+                <span class="c1">## -9 = SIGKILL = it was (probably) killed by this script. aka, this is normal.</span>
+                <span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">9</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Scenario process exited with exit code </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Command: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">))</span>
+
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Initializing scenario&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OSRM</span><span class="o">.</span><span class="n">routed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                                            <span class="n">ready_callback</span><span class="p">,</span>
+                                            <span class="n">done_callback</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span><span class="p">)</span>
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+            <span class="k">pass</span>
 
-    <span class="c1">## Alias for calling</span>
-    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">run</span></div>
+        <span class="c1">## Wait until OSRM-routed is ready before returning the api</span>
+        <span class="c1">## TODO better way to do this</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ScenarioAPI"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.ScenarioAPI">[docs]</a><span class="k">class</span> <span class="nc">ScenarioAPI</span><span class="p">(</span><span class="n">AbstractContextManager</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ScenarioAPI is a context manager for the execution of the `osrm-routed` HTTP server,</span>
-<span class="sd">    and provides a low-level API for querying that server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Ready for requests&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
-<span class="sd">    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by the `python-osrm` module (https://github.com/ustroetz/python-osrm)</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    scenario : Scenario</span>
-<span class="sd">        Scenario for which the API is to query</span>
-<span class="sd">    call_opts : dict</span>
-<span class="sd">        Any additional parameters to be passed to osrm-routed</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="c1">## TODO handle common exceptions</span>
+        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="n">HTTPError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc_value</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">))</span>
 
-    <span class="c1">## These are here so sphinx pulls the API documentation from python-osrm</span>
-    <span class="n">simple_route</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">simple_route</span>
-    <span class="n">nearest</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">nearest</span>
-    <span class="n">match</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">match</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">table</span>
-    <span class="n">trip</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">trip</span>
+        <span class="c1">## Kill the OSRM process</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">call_opts</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ScenarioAPI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">LOGGER</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span> <span class="o">=</span> <span class="n">call_opts</span>
-
-<div class="viewcode-block" id="ScenarioAPI.is_alive"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.ScenarioAPI.is_alive">[docs]</a>    <span class="k">def</span> <span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Scenario.is_alive"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.is_alive">[docs]</a>    <span class="k">def</span> <span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;True if Scenario process is running, False otherwise&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;process&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s2">&quot;process&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
@@ -347,57 +367,43 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">osrm</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">url_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trip</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">osrm</span><span class="o">.</span><span class="n">trip</span><span class="p">,</span> <span class="n">url_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_open_port</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;algorithm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">algorithm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span>
+    <span class="c1">##</span>
+    <span class="c1">## Call and run</span>
 
-        <span class="c1">## Point the osrm http api to correct port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="kc">False</span>
+<div class="viewcode-block" id="Scenario.run"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Compile and run scenario, and return ScenarioAPI. Any `**kwargs` are passed as arguments to osrm-routed. This can also be called by Scenario(**kwargs)&#39;&#39;&#39;</span>
 
-        <span class="c1">## Start up OSRM Server</span>
+        <span class="c1">## Compile scenario</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1">## Callback to execute when OSRM process is ready to receive http requests</span>
-            <span class="k">def</span> <span class="nf">ready_callback</span><span class="p">(</span><span class="n">process</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ready</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">routed_opts</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
 
-            <span class="c1">## Callback when command exits</span>
-            <span class="k">def</span> <span class="nf">done_callback</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
-                <span class="c1">## -9 = SIGKILL = it was (probably) killed by this script. aka, this is normal.</span>
-                <span class="k">if</span> <span class="n">exit_code</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">9</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Scenario process exited with exit code </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Command: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cmd</span><span class="p">))</span>
-
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Initializing scenario&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">OSRM</span><span class="o">.</span><span class="n">routed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                                                     <span class="n">ready_callback</span><span class="p">,</span>
-                                                     <span class="n">done_callback</span><span class="p">,</span>
-                                                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">call_opts</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span></div>
+       
+    <span class="c1">## Alias for calling</span>
+    <span class="fm">__call__</span> <span class="o">=</span> <span class="n">run</span>
 
-        <span class="c1">## Wait until OSRM-routed is ready before returning the api</span>
-        <span class="c1">## TODO better way to do this</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">##</span>
+    <span class="c1">## Convenience</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Ready for requests&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="c1">## These are here so sphinx pulls the API documentation from python-osrm</span>
+    <span class="n">simple_route</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">simple_route</span>
+    <span class="n">nearest</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">nearest</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">match</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">table</span>
+    <span class="n">trip</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">trip</span>
 
-        <span class="k">return</span> <span class="bp">self</span>
+<div class="viewcode-block" id="Scenario.get_name"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Scenario name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="c1">## TODO handle common exceptions</span>
-        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">))</span>
+<div class="viewcode-block" id="Scenario.get_path"><a class="viewcode-back" href="../../index.html#tebetebe.Scenario.Scenario.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Scenario Path&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div></div>
 
-        <span class="c1">## Kill the OSRM process</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">pass</span></div>
 </pre></div>
 
            </div>
