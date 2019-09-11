@@ -38,7 +38,6 @@ This example uses the eSwatini GeoFabrik extract and the `default walking profil
 
 .. literalinclude:: ../../examples/simple_scenario.py
 
-
 .. code-block:: shell
    :caption: Simple Scenario output
 
@@ -84,10 +83,10 @@ tb.Scenario
    :undoc-members:
    :show-inheritance:
 
-tb.RouteNetwork
+tb.OSMDataset
 ***************
 
-.. automodule:: tebetebe.RouteNetwork
+.. automodule:: tebetebe.OSMDataset
    :members:
    :undoc-members:
    :show-inheritance:

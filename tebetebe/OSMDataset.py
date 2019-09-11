@@ -9,9 +9,9 @@ from pathlib import Path
 from .utils import hash_
 from . import defaults
 
-class RouteNetwork():
+class OSMDataset():
     '''
-    Raw OSM data from which a route network will be extracted
+    OSM data file from which a route network will be extracted
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ class RouteNetwork():
 
         ## Check path exists
         if not self.path.is_file():
-            raise FileNotFoundError("RouteNetwork Not Found ({})".format(osm_path))
+            raise FileNotFoundError("OSMDataset Not Found ({})".format(osm_path))
 
         ## Set profile name to filename if not specified
         self.name = name if name else self.path.stem.split(".")[0]
@@ -44,7 +44,7 @@ class RouteNetwork():
     @classmethod
     def from_overpass(cls, query, name=None, overwrite=False, tmp_dir=defaults.TMP_DIR, **kwargs):
         '''
-        Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm
+        Initialize an OSMDataset by downloading result of an overpass query and saving as .osm
 
         Parameters
         ----------
@@ -75,10 +75,10 @@ class RouteNetwork():
                 logger.info("Overwriting {}".format(out_file))
                 out_file.unlink()
             else:
-                logger.info("Using existing RouteNetwork {}".format(out_file))
+                logger.info("Using existing OSMDataset {}".format(out_file))
                 return cls(out_file, name=name, overwrite=overwrite, tmp_dir=tmp_dir)
 
-        logger.info("Downloading RouteNetwork {}".format(name))
+        logger.info("Downloading OSMDataset {}".format(name))
 
         ## Query API
         oapi = overpass.API()

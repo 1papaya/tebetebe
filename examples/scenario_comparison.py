@@ -5,7 +5,7 @@ tb_env = tb.Environment(tmp_dir="./tmp/scenario_comparison")
 
 ## Get route network from GeoFabrik extract
 ## Load the origins (homesteads) and dests (schools) 8km around river crossing from Overpass API
-highways = tb_env.RouteNetwork("./tmp/swaziland-latest.osm.pbf", name="swazi")
+highways = tb_env.OSMDataset("./tmp/swaziland-latest.osm.pbf", name="swazi")
 homesteads = tb_env.POIDataset.from_overpass("""node(6750683291)->.crossing;
                                                  ( way(around.crossing:8000)["building"];);
                                                 out center;""",

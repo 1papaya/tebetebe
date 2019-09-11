@@ -15,7 +15,7 @@ from functools import partial
 from pathlib import Path
 
 from .RoutingProfile import RoutingProfile
-from .RouteNetwork import RouteNetwork
+from .OSMDataset import OSMDataset
 from .OSRM import OSRM
 from . import defaults
 from . import utils
@@ -25,22 +25,22 @@ class Scenario():
     Scenario is an abstraction of OSRM executables in order to compile, serve, and query
     a routable network.
 
-    A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The
-    Scenario is compiled when called, and the class itself is a context manager to serve
-    an HTTP API for the Scenario which can then be queried with a low-level API.
+    A Scenario is initialized with (1) an OSM Dataset and (2) a Routing Profile. When called,
+    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network, and
+    provides a context manager to serve and query the HTTP API for the Scenario.
 
     The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by
     the `python-osrm` module (https://github.com/ustroetz/python-osrm)
 
     Parameters
     ----------
-    route_network : str / RouteNetwork
-        Route network to be used in scenario
+    osm_dataset : str / OSMDataset
+        OSM dataset from which the route network will be extracted
     routing_profile : str / RoutingProfile
         Routing profile to be used in scenario
     name : str, optional
         Scenario name used in output file and log entries. If not supplied, it will be built
-        based upon the route network & routing profile names
+        based upon the OSMDataset and RoutingProfile names
     algorithm : str, optional
         Algorithm to be used (either "CH" or "MLD")
     tmp_dir : str, optional
@@ -56,7 +56,7 @@ class Scenario():
         of key:values to be passed
     """
 
-    def __init__(self, route_network, routing_profile,
+    def __init__(self, osm_dataset, routing_profile,
                  name=None, algorithm="MLD", 
                  tmp_dir=defaults.TMP_DIR,
                  overwrite=defaults.OVERWRITE,
@@ -69,20 +69,20 @@ class Scenario():
         self.overwrite = overwrite
 
         ## Handle if params are passed as string
-        if isinstance(route_network, str):
-            route_network = RouteNetwork(route_network, tmp_dir=self.tmp_dir)
+        if isinstance(osm_dataset, str):
+            osm_dataset = OSMDataset(osm_dataset, tmp_dir=self.tmp_dir)
 
         if isinstance(routing_profile, str):
             routing_profile = RoutingProfile(routing_profile)
 
-        self.route_network = route_network
+        self.osm_dataset = osm_dataset
         self.routing_profile = routing_profile
 
         ## Initialize / check OSRM Binaries
         self.OSRM = OSRM(verbose=verbose)
 
         ## Scenario name and output osrm path
-        self.name = name if name else "{}_{}".format(self.route_network.get_name(),
+        self.name = name if name else "{}_{}".format(self.osm_dataset.get_name(),
                                                      self.routing_profile.get_name())
         self.path = self.tmp_dir / self.name / "{}.osrm".format(self.name)
         self.path.parent.mkdir(parents=True, exist_ok=True) # Make sure output_dir exists
@@ -99,7 +99,7 @@ class Scenario():
 
     def __call__(self):
         '''
-        Compile route network and routing profile into a routable OSRM file
+        Compile OSMDataset and RoutingProfile into a routable network
         '''
 
         ## Honor overwrite settings
@@ -118,14 +118,14 @@ class Scenario():
             self.log.info("{}: Compiling scenario ({})".format(self.name, self.algorithm))
 
             ## Run osrm-extract
-            extr = self.OSRM.extract(self.route_network.get_path(),
+            extr = self.OSRM.extract(self.osm_dataset.get_path(),
                                      self.routing_profile.get_path(),
                                      **self._get_command_args("extract"))
             extr.wait() ## synchronous execution
 
-            ## osrm-extract generates osrm file in same folder as route_network
+            ## osrm-extract generates osrm file in same folder as OSMDataset
             ## so rename and move all files to self.path
-            network_path = self.route_network.get_path()
+            network_path = self.osm_dataset.get_path()
 
             for src_path in network_path.parent.glob("{}.osrm*".format(network_path.stem.split(".")[0])):
                 dst_file = src_path.name.replace(src_path.stem.split(".")[0], self.name)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from .RoutingProfile import RoutingProfile
-from .RouteNetwork import RouteNetwork
+from .OSMDataset import OSMDataset
 from .POIDataset import POIDataset
 from .Scenario import Scenario
 
@@ -35,9 +35,9 @@ class Environment():
             setattr(self, k_name, Path(kwarg) if k_name == "tmp_dir" else kwarg)
 
         self.RoutingProfile = partial(RoutingProfile, **kwargs)
-        self.RouteNetwork = partial(RouteNetwork, **kwargs)
+        self.OSMDataset = partial(OSMDataset, **kwargs)
         self.POIDataset = partial(POIDataset, **kwargs)
         self.Scenario = partial(Scenario, **kwargs)
 
-        self.RouteNetwork.from_overpass = partial(RouteNetwork.from_overpass, **kwargs)
+        self.OSMDataset.from_overpass = partial(OSMDataset.from_overpass, **kwargs)
         self.POIDataset.from_overpass = partial(POIDataset.from_overpass, **kwargs)

@@ -158,7 +158,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">.RoutingProfile</span> <span class="k">import</span> <span class="n">RoutingProfile</span>
-<span class="kn">from</span> <span class="nn">.RouteNetwork</span> <span class="k">import</span> <span class="n">RouteNetwork</span>
+<span class="kn">from</span> <span class="nn">.OSMDataset</span> <span class="k">import</span> <span class="n">OSMDataset</span>
 <span class="kn">from</span> <span class="nn">.OSRM</span> <span class="k">import</span> <span class="n">OSRM</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">defaults</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
@@ -168,22 +168,22 @@
 <span class="sd">    Scenario is an abstraction of OSRM executables in order to compile, serve, and query</span>
 <span class="sd">    a routable network.</span>
 
-<span class="sd">    A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The</span>
-<span class="sd">    Scenario is compiled when called, and the class itself is a context manager to serve</span>
-<span class="sd">    an HTTP API for the Scenario which can then be queried with a low-level API.</span>
+<span class="sd">    A Scenario is initialized with (1) an OSM Dataset and (2) a Routing Profile. When called,</span>
+<span class="sd">    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network, and</span>
+<span class="sd">    provides a context manager to serve and query the HTTP API for the Scenario.</span>
 
 <span class="sd">    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by</span>
 <span class="sd">    the `python-osrm` module (https://github.com/ustroetz/python-osrm)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    route_network : str / RouteNetwork</span>
-<span class="sd">        Route network to be used in scenario</span>
+<span class="sd">    osm_dataset : str / OSMDataset</span>
+<span class="sd">        OSM dataset from which the route network will be extracted</span>
 <span class="sd">    routing_profile : str / RoutingProfile</span>
 <span class="sd">        Routing profile to be used in scenario</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        Scenario name used in output file and log entries. If not supplied, it will be built</span>
-<span class="sd">        based upon the route network &amp; routing profile names</span>
+<span class="sd">        based upon the OSMDataset and RoutingProfile names</span>
 <span class="sd">    algorithm : str, optional</span>
 <span class="sd">        Algorithm to be used (either &quot;CH&quot; or &quot;MLD&quot;)</span>
 <span class="sd">    tmp_dir : str, optional</span>
@@ -199,7 +199,7 @@
 <span class="sd">        of key:values to be passed</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">route_network</span><span class="p">,</span> <span class="n">routing_profile</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">osm_dataset</span><span class="p">,</span> <span class="n">routing_profile</span><span class="p">,</span>
                  <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;MLD&quot;</span><span class="p">,</span> 
                  <span class="n">tmp_dir</span><span class="o">=</span><span class="n">defaults</span><span class="o">.</span><span class="n">TMP_DIR</span><span class="p">,</span>
                  <span class="n">overwrite</span><span class="o">=</span><span class="n">defaults</span><span class="o">.</span><span class="n">OVERWRITE</span><span class="p">,</span>
@@ -212,20 +212,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span>
 
         <span class="c1">## Handle if params are passed as string</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">route_network</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">route_network</span> <span class="o">=</span> <span class="n">RouteNetwork</span><span class="p">(</span><span class="n">route_network</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">osm_dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">osm_dataset</span> <span class="o">=</span> <span class="n">OSMDataset</span><span class="p">(</span><span class="n">osm_dataset</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">routing_profile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">routing_profile</span> <span class="o">=</span> <span class="n">RoutingProfile</span><span class="p">(</span><span class="n">routing_profile</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">route_network</span> <span class="o">=</span> <span class="n">route_network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">osm_dataset</span> <span class="o">=</span> <span class="n">osm_dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">routing_profile</span> <span class="o">=</span> <span class="n">routing_profile</span>
 
         <span class="c1">## Initialize / check OSRM Binaries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">OSRM</span> <span class="o">=</span> <span class="n">OSRM</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
         <span class="c1">## Scenario name and output osrm path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">route_network</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">osm_dataset</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span>
                                                      <span class="bp">self</span><span class="o">.</span><span class="n">routing_profile</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.osrm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Make sure output_dir exists</span>
@@ -242,7 +242,7 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Compile route network and routing profile into a routable OSRM file</span>
+<span class="sd">        Compile OSMDataset and RoutingProfile into a routable network</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="c1">## Honor overwrite settings</span>
@@ -261,14 +261,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Compiling scenario (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">))</span>
 
             <span class="c1">## Run osrm-extract</span>
-            <span class="n">extr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OSRM</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">route_network</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
+            <span class="n">extr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OSRM</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">osm_dataset</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">routing_profile</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
                                      <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_command_args</span><span class="p">(</span><span class="s2">&quot;extract&quot;</span><span class="p">))</span>
             <span class="n">extr</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">## synchronous execution</span>
 
-            <span class="c1">## osrm-extract generates osrm file in same folder as route_network</span>
+            <span class="c1">## osrm-extract generates osrm file in same folder as OSMDataset</span>
             <span class="c1">## so rename and move all files to self.path</span>
-            <span class="n">network_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">route_network</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
+            <span class="n">network_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">osm_dataset</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
 
             <span class="k">for</span> <span class="n">src_path</span> <span class="ow">in</span> <span class="n">network_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.osrm*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">network_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])):</span>
                 <span class="n">dst_file</span> <span class="o">=</span> <span class="n">src_path</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">src_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>

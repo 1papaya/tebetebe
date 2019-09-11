@@ -144,7 +144,7 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="kn">from</span> <span class="nn">.RoutingProfile</span> <span class="k">import</span> <span class="n">RoutingProfile</span>
-<span class="kn">from</span> <span class="nn">.RouteNetwork</span> <span class="k">import</span> <span class="n">RouteNetwork</span>
+<span class="kn">from</span> <span class="nn">.OSMDataset</span> <span class="k">import</span> <span class="n">OSMDataset</span>
 <span class="kn">from</span> <span class="nn">.POIDataset</span> <span class="k">import</span> <span class="n">POIDataset</span>
 <span class="kn">from</span> <span class="nn">.Scenario</span> <span class="k">import</span> <span class="n">Scenario</span>
 
@@ -178,11 +178,11 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_name</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">kwarg</span><span class="p">)</span> <span class="k">if</span> <span class="n">k_name</span> <span class="o">==</span> <span class="s2">&quot;tmp_dir&quot;</span> <span class="k">else</span> <span class="n">kwarg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">RoutingProfile</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">RoutingProfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RouteNetwork</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">RouteNetwork</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OSMDataset</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">OSMDataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">POIDataset</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">POIDataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Scenario</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Scenario</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">RouteNetwork</span><span class="o">.</span><span class="n">from_overpass</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">RouteNetwork</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OSMDataset</span><span class="o">.</span><span class="n">from_overpass</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">OSMDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 

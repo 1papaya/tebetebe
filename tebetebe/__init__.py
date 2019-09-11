@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from .RoutingProfile import RoutingProfile
-from .RouteNetwork import RouteNetwork
 from .Environment import Environment
+from .OSMDataset import OSMDataset
 from .POIDataset import POIDataset
 from .Scenario import Scenario
 
