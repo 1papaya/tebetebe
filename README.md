@@ -24,6 +24,7 @@ Calculate the route from Mbabane to Simunye using a walking scenario. Check out 
 
 ```python
 import tebetebe as tb
+from tebetebe.profiles import foot
 
 tb_env = tb.Environment(tmp_dir="./tmp/simple_scenario",
                         overwrite=False, verbose=False)
@@ -32,9 +33,8 @@ mbabane = (31.1367, -26.3054)
 simunye = (31.9274, -26.2108)
 
 ## Initialize scenario ising eSwatini GeoFabrik extract and
-## osrm-backend default walk profile
-scenario = tb_env.Scenario("./swaziland-latest.osm.pbf",
-                           "./profiles/walk.lua")
+## osrm-backend default foot profile
+scenario = tb_env.Scenario("./swaziland-latest.osm.pbf", foot)
 
 ## Run scenario
 with scenario() as api:
@@ -47,3 +47,4 @@ with scenario() as api:
     print("Walking from Simunye to Mbabane")
     print(" Duration: {:.2f} minutes".format(duration))
     print(" Distance: {:.2f} km".format(distance))
+```
