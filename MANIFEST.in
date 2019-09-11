@@ -1,0 +1,2 @@
+include tebetebe/profiles/**.lua
+include tebetebe/profiles/**/**.lua

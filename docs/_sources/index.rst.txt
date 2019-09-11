@@ -4,7 +4,7 @@
 tebetebe: routing analysis with OSM
 ############
 
-`tebetebe <https://github.com/1papaya/tebetebe>`_ is a Python API to compile, serve, and query routable networks using the `Open Source Routing Machine <https://project-osrm.org>`_ (OSRM) and `OpenStreetMap <https://openstreetmap.org>`_ data.
+`tebetebe <https://github.com/1papaya/tebetebe>`_ is a Python API for the `Open Source Routing Machine <https://project-osrm.org>`_ (OSRM) to compile, serve, and query routable networks using `OpenStreetMap <https://openstreetmap.org>`_ data, and to provide a framework for routing analysis with these networks.
 
 Installation
 ************

@@ -1,6 +1,6 @@
 # tebetebe: routing analysis with OSM
 
-[tebetebe](https://github.com/1papaya/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data.
+[tebetebe](https://github.com/1papaya/tebetebe) is a Python API for the [Open Source Routing Machine](https://project-osrm.org) (OSRM) to compile, serve, and query routable networks using [OpenStreetMap](https://openstreetmap.org) data.
 
 ## Installation
 
@@ -31,21 +31,14 @@ tb_env = tb.Environment(tmp_dir="./tmp/simple_scenario",
 mbabane = (31.1367, -26.3054)
 simunye = (31.9274, -26.2108)
 
-## Query Overpass API for all ways with "highway" attribute inside eSwatini
-highways = tb_env.RouteNetwork \
-           .from_overpass("""
-                area[name="eSwatini"];
-                  (way["highway"](area););
-                out meta; >; out skel qt;""",
-                          name="swazi")
-
-profile = tb_env.RoutingProfile("./profiles/walk.lua")
-
-## Initialize Scenario
-scenario = tb_env.Scenario(highways, profile)
+## Initialize scenario ising eSwatini GeoFabrik extract and
+## osrm-backend default walk profile
+scenario = tb_env.Scenario("./swaziland-latest.osm.pbf",
+                           "./profiles/walk.lua")
 
 ## Run scenario
 with scenario() as api:
+    ## Query OSRM HTTP `simple_route` service to calculate route
     route = api.simple_route(simunye, mbabane)
 
     duration = route['routes'][0]['duration'] / 60
@@ -54,4 +47,3 @@ with scenario() as api:
     print("Walking from Simunye to Mbabane")
     print(" Duration: {:.2f} minutes".format(duration))
     print(" Distance: {:.2f} km".format(distance))
-```

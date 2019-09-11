@@ -8,6 +8,7 @@ setuptools.setup(
     description="Routing analysis with OSM",
     url="https://github.com/1papaya/tebetebe",
     packages=setuptools.find_packages(),
+    include_package_data=True,
     install_requires=[
         "osrm",
         "geojson",

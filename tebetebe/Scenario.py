@@ -23,7 +23,7 @@ from . import utils
 class Scenario():
     """
     Scenario is an abstraction of OSRM binaries in order to compile, serve, and query
-    a routable network based upon an OSM dataset and routing profile.
+    a routable network.
 
     A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The
     Scenario is compiled when called, and provides a context manager to serve the compiled
@@ -220,7 +220,7 @@ class Scenario():
             pass
 
     ##
-    ## HTTP API
+    ## osrm-routed HTTP API
 
     simple_route = osrm.simple_route
     nearest = osrm.nearest
