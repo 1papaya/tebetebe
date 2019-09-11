@@ -7,8 +7,8 @@ class AccessIsochrone(OSRMAccessIsochrone):
 
     Parameters
     ----------
-    api : ScenarioAPI
-        API to be queried for access Isochrone
+    scenario : Scenario
+        Scenario to be queried for access isochrone
     point_origin : 2-floats tuple
         The coordinates of the center point to use as (x, y).
     points_grid : int
@@ -16,10 +16,10 @@ class AccessIsochrone(OSRMAccessIsochrone):
     size : float
         Search radius (in wgs84 degrees)
     """
-    def __init__(self, api, point_origin, points_grid=500, size=0.4):
+    def __init__(self, scenario, point_origin, points_grid=500, size=0.4):
 
         super(AccessIsochrone, self).__init__(point_origin, points_grid, size,
-                                              url_config = api.config)
+                                              url_config = scenario.config)
 
     def get_center(self):
         """Return center point used in isochrone calculations"""

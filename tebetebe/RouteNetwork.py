@@ -11,7 +11,7 @@ from . import defaults
 
 class RouteNetwork():
     '''
-    .osm file from which a route network will be extracted
+    Raw OSM data from which a route network will be extracted
 
     Parameters
     ----------

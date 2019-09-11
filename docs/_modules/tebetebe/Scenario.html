@@ -165,12 +165,12 @@
 
 <div class="viewcode-block" id="Scenario"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.Scenario.Scenario">[docs]</a><span class="k">class</span> <span class="nc">Scenario</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Scenario is an abstraction of OSRM binaries in order to compile, serve, and query</span>
-<span class="sd">    a routable network based upon an OSM dataset and routing profile.</span>
+<span class="sd">    Scenario is an abstraction of OSRM executables in order to compile, serve, and query</span>
+<span class="sd">    a routable network.</span>
 
 <span class="sd">    A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The</span>
-<span class="sd">    Scenario is compiled when called, and provides a context manager to serve the compiled</span>
-<span class="sd">    Scenario which can then be queried with a low-level API.</span>
+<span class="sd">    Scenario is compiled when called, and the class itself is a context manager to serve</span>
+<span class="sd">    an HTTP API for the Scenario which can then be queried with a low-level API.</span>
 
 <span class="sd">    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by</span>
 <span class="sd">    the `python-osrm` module (https://github.com/ustroetz/python-osrm)</span>
@@ -363,7 +363,7 @@
             <span class="k">pass</span>
 
     <span class="c1">##</span>
-    <span class="c1">## HTTP API</span>
+    <span class="c1">## osrm-routed HTTP API</span>
 
     <span class="n">simple_route</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">simple_route</span>
     <span class="n">nearest</span> <span class="o">=</span> <span class="n">osrm</span><span class="o">.</span><span class="n">nearest</span>

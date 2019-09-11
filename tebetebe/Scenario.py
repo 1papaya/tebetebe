@@ -22,12 +22,12 @@ from . import utils
 
 class Scenario():
     """
-    Scenario is an abstraction of OSRM binaries in order to compile, serve, and query
+    Scenario is an abstraction of OSRM executables in order to compile, serve, and query
     a routable network.
 
     A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The
-    Scenario is compiled when called, and provides a context manager to serve the compiled
-    Scenario which can then be queried with a low-level API.
+    Scenario is compiled when called, and the class itself is a context manager to serve
+    an HTTP API for the Scenario which can then be queried with a low-level API.
 
     The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by
     the `python-osrm` module (https://github.com/ustroetz/python-osrm)

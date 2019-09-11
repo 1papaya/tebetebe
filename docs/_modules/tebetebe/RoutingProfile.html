@@ -150,13 +150,17 @@
 
 <div class="viewcode-block" id="RoutingProfile"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.RoutingProfile.RoutingProfile">[docs]</a><span class="k">class</span> <span class="nc">RoutingProfile</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    RoutingProfile is a .lua file with directives on how to turn a RouteNetwork</span>
-<span class="sd">    into a routable OSRM file</span>
+<span class="sd">    A RoutingProfile is a configuration script which represents a routing behaviour, such</span>
+<span class="sd">    as for bike or car routing. It describes whether or not to traverse a particular type</span>
+<span class="sd">    of way or node in OSM data, and the speed at which those elements are traversed.</span>
+
+<span class="sd">    Check out the osrm-backend wiki for more information!</span>
+<span class="sd">    https://github.com/Project-OSRM/osrm-backend/wiki/Profiles</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    lua_path: str</span>
-<span class="sd">        Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</span>
+<span class="sd">        Path to .lua configuration script</span>
 <span class="sd">    name: str, optional</span>
 <span class="sd">        Name of routing profile. If not provided, the .lua filename is used.</span>
 <span class="sd">    &#39;&#39;&#39;</span>

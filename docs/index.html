@@ -91,9 +91,9 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#api-documentation">API Documentation</a><ul>
+<li><a class="reference internal" href="#module-tebetebe.Scenario">tb.Scenario</a></li>
 <li><a class="reference internal" href="#module-tebetebe.RouteNetwork">tb.RouteNetwork</a></li>
 <li><a class="reference internal" href="#tb-routingprofile">tb.RoutingProfile</a></li>
-<li><a class="reference internal" href="#module-tebetebe.Scenario">tb.Scenario</a></li>
 <li><a class="reference internal" href="#module-tebetebe.POIDataset">tb.POIDataset</a></li>
 <li><a class="reference internal" href="#module-tebetebe.Environment">tb.Environment</a></li>
 <li><a class="reference internal" href="#module-tebetebe.OSRM">tb.OSRM</a></li>
@@ -171,7 +171,7 @@
             
   <div class="section" id="tebetebe-routing-analysis-with-osm">
 <h1>tebetebe: routing analysis with OSM<a class="headerlink" href="#tebetebe-routing-analysis-with-osm" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://github.com/1papaya/tebetebe">tebetebe</a> is a Python API for the <a class="reference external" href="https://project-osrm.org">Open Source Routing Machine</a> (OSRM) to compile, serve, and query routable networks using <a class="reference external" href="https://openstreetmap.org">OpenStreetMap</a> data, and to provide a framework for routing analysis with these networks.</p>
+<p><a class="reference external" href="https://github.com/1papaya/tebetebe">tebetebe</a> is a Python API to compile, serve, and query routable networks using the <a class="reference external" href="https://project-osrm.org">Open Source Routing Machine</a> (OSRM) and <a class="reference external" href="https://openstreetmap.org">OpenStreetMap</a> data, and a framework for routing analysis using these networks.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="install-osrm-backend-binaries">
@@ -197,33 +197,25 @@ python3 setup.py install
 </div>
 <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>Files referenced by the examples can be found in the <a class="reference external" href="https://github.com/1papaya/tebetebe/tree/master/examples">/examples/ folder</a> of the GitHub repo.</p>
+<p>RoutingProfiles referenced by the examples can be found in the <a class="reference external" href="https://github.com/1papaya/tebetebe/tree/master/examples">/examples/ folder</a> of the GitHub repo.</p>
 <div class="section" id="simple-scenario">
 <h2>Simple Scenario<a class="headerlink" href="#simple-scenario" title="Permalink to this headline">¶</a></h2>
-<p>This example downloads eSwatini highways from the Overpass API and uses the <a class="reference external" href="https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua">default walking profile</a> from <cite>osrm-backend</cite> to calculate a walking route between Simunye and Mbabane.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tebetebe</span> <span class="k">as</span> <span class="nn">tb</span>
+<p>This example uses the eSwatini GeoFabrik extract and the <a class="reference external" href="https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua">default walking profile</a> to calculate a walking route between Simunye and Mbabane.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tebetebe.profiles</span> <span class="k">import</span> <span class="n">foot</span>
+<span class="kn">import</span> <span class="nn">tebetebe</span> <span class="k">as</span> <span class="nn">tb</span>
 
-<span class="n">tb_env</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">tmp_dir</span><span class="o">=</span><span class="s2">&quot;./tmp/simple_scenario&quot;</span><span class="p">,</span>
-                        <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">tb_env</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">tmp_dir</span><span class="o">=</span><span class="s2">&quot;./tmp/simple_scenario&quot;</span><span class="p">)</span>
 
 <span class="n">mbabane</span> <span class="o">=</span> <span class="p">(</span><span class="mf">31.1367</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.3054</span><span class="p">)</span>
 <span class="n">simunye</span> <span class="o">=</span> <span class="p">(</span><span class="mf">31.9274</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.2108</span><span class="p">)</span>
 
-<span class="c1">## Query Overpass API for all ways with &quot;highway&quot; attribute inside eSwatini</span>
-<span class="n">highways</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">RouteNetwork</span> \
-           <span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                area[name=&quot;eSwatini&quot;];</span>
-<span class="s2">                  (way[&quot;highway&quot;](area););</span>
-<span class="s2">                out meta; &gt;; out skel qt;&quot;&quot;&quot;</span><span class="p">,</span>
-                          <span class="n">name</span><span class="o">=</span><span class="s2">&quot;swazi&quot;</span><span class="p">)</span>
-
-<span class="n">profile</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">RoutingProfile</span><span class="p">(</span><span class="s2">&quot;./profiles/walk.lua&quot;</span><span class="p">)</span>
-
-<span class="c1">## Initialize Scenario</span>
-<span class="n">scenario</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span>
+<span class="c1">## Initialize scenario ising eSwatini GeoFabrik extract and</span>
+<span class="c1">## default foot profile</span>
+<span class="n">scenario</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="s2">&quot;./tmp/swaziland-latest.osm.pbf&quot;</span><span class="p">,</span> <span class="n">foot</span><span class="p">)</span>
 
 <span class="c1">## Run scenario</span>
 <span class="k">with</span> <span class="n">scenario</span><span class="p">()</span> <span class="k">as</span> <span class="n">api</span><span class="p">:</span>
+    <span class="c1">## Query OSRM HTTP `simple_route` service to calculate route</span>
     <span class="n">route</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">simple_route</span><span class="p">(</span><span class="n">simunye</span><span class="p">,</span> <span class="n">mbabane</span><span class="p">)</span>
 
     <span class="n">duration</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="s1">&#39;routes&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">60</span>
@@ -234,35 +226,40 @@ python3 setup.py install
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Distance: </span><span class="si">{:.2f}</span><span class="s2"> km&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Simple Scenario output</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span> Walking from Simunye to Mbabane
+  Duration: <span class="m">1420</span>.70 minutes
+  Distance: <span class="m">118</span>.39 km
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="scenario-comparison">
 <h2>Scenario Comparison<a class="headerlink" href="#scenario-comparison" title="Permalink to this headline">¶</a></h2>
 <p>By comparing origin:destination routes between different scenarios, we gain insight about how changing a transportation scenario affects route patterns.</p>
-<p>Here, we route the homesteads in an 8km radius from a river crossing to the local primary and high schools, both in a normal walking scenario and a flood scenario. We then compare the routes between scenarios to determine the homesteads affected by flood and the routes both in normal and flood conditions.</p>
-<p>The normal walking scenario in this case is the standard default <cite>walk.lua</cite> from <cite>osrm-backend</cite>. The <cite>walk_flood.lua</cite> is the same scenario except it considers nodes with ford=yes to be a barrier.</p>
+<p>Here, we compare routes calculated by two different Scenarios: a “normal” walking scenario, and a “flood” scenario, to understand the impact of a flooding event on access to local schools in eSwatini. The route network is taken from the eSwatini GeoFabrik extract, and the homesteads (origins) and schools (destinations) are downloaded from the Overpass API.</p>
+<p>The “normal”  and “flood” scenarios in this case are both the default walk profile, except that the “flood” scenari considers nodes with <code class="docutils literal notranslate"><span class="pre">ford=yes</span></code> (river crossings), and ways with <code class="docutils literal notranslate"><span class="pre">flood_prone=yes</span></code> to be a barrier.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tebetebe.analysis</span> <span class="k">import</span> <span class="n">ParallelScenarios</span><span class="p">,</span> <span class="n">RouteComparison</span>
 <span class="kn">import</span> <span class="nn">tebetebe</span> <span class="k">as</span> <span class="nn">tb</span>
 
-<span class="n">queries</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;homesteads&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">       node(6750683291)-&gt;.crossing;</span>
-<span class="s2">         ( way(around.crossing:8000)[&quot;building&quot;];);</span>
-<span class="s2">       out center;</span>
-<span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;schools&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;(way(718997017); way(721959090);); out center;&quot;&quot;&quot;</span>
-<span class="p">}</span>
+<span class="n">tb_env</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">tmp_dir</span><span class="o">=</span><span class="s2">&quot;./tmp/scenario_comparison&quot;</span><span class="p">)</span>
 
-<span class="n">tb_env</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">tmp_dir</span><span class="o">=</span><span class="s2">&quot;./tmp/scenario_comparison&quot;</span><span class="p">,</span>
-                        <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1">## Get route network, origins, and destinations from Overpass</span>
+<span class="c1">## Get route network from GeoFabrik extract</span>
+<span class="c1">## Load the origins (homesteads) and dests (schools) 8km around river crossing from Overpass API</span>
 <span class="n">highways</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">RouteNetwork</span><span class="p">(</span><span class="s2">&quot;./tmp/swaziland-latest.osm.pbf&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;swazi&quot;</span><span class="p">)</span>
-<span class="n">origins</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="n">queries</span><span class="p">[</span><span class="s2">&quot;homesteads&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;homesteads&quot;</span><span class="p">)</span>
-<span class="n">dests</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="n">queries</span><span class="p">[</span><span class="s2">&quot;schools&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;schools&quot;</span><span class="p">)</span>
+<span class="n">homesteads</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;node(6750683291)-&gt;.crossing;</span>
+<span class="s2">                                                 ( way(around.crossing:8000)[&quot;building&quot;];);</span>
+<span class="s2">                                                out center;&quot;&quot;&quot;</span><span class="p">,</span>
+                                             <span class="n">name</span><span class="o">=</span><span class="s2">&quot;homesteads&quot;</span><span class="p">)</span>
+<span class="n">schools</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">POIDataset</span><span class="o">.</span><span class="n">from_overpass</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;node(6750683291)-&gt;.crossing;</span>
+<span class="s2">                                                 ( way(around.crossing:8000)[&quot;amenity&quot;=&quot;school&quot;];);</span>
+<span class="s2">                                                out center;&quot;&quot;&quot;</span><span class="p">,</span>
+                                          <span class="n">name</span><span class="o">=</span><span class="s2">&quot;schools&quot;</span><span class="p">)</span>
 
 <span class="c1">## Normal &amp; Flood scenarios. Pass along an extra parameter to osrm-routed</span>
 <span class="c1">## so that the max duration table size is enough for all origin:dest pairs</span>
-<span class="n">routed_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;max_table_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">origins</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dests</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">routed_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;max_table_size&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">homesteads</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">schools</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span>
 
 <span class="n">normal</span> <span class="o">=</span> <span class="n">tb_env</span><span class="o">.</span><span class="n">Scenario</span><span class="p">(</span><span class="n">highways</span><span class="p">,</span> <span class="s2">&quot;./profiles/walk_normal.lua&quot;</span><span class="p">,</span>
                          <span class="n">routed_args</span><span class="o">=</span><span class="n">routed_args</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
@@ -274,13 +271,13 @@ python3 setup.py install
 
 <span class="k">with</span> <span class="n">parallel_scenarios</span> <span class="k">as</span> <span class="n">scenarios</span><span class="p">:</span>
     <span class="c1">## Compare origin:dest routes</span>
-    <span class="n">comparison</span> <span class="o">=</span> <span class="n">RouteComparison</span><span class="p">(</span><span class="n">origins</span><span class="p">,</span> <span class="n">dests</span><span class="p">)</span>
+    <span class="n">comparison</span> <span class="o">=</span> <span class="n">RouteComparison</span><span class="p">(</span><span class="n">homesteads</span><span class="p">,</span> <span class="n">schools</span><span class="p">)</span>
 
     <span class="c1">## Routes that are different between scenarios</span>
     <span class="n">flood_affected</span> <span class="o">=</span> <span class="n">comparison</span><span class="o">.</span><span class="n">get_difference</span><span class="p">(</span><span class="n">normal</span><span class="p">,</span> <span class="n">flood</span><span class="p">)</span>
 
     <span class="c1">## Point dataframe of all homesteads who are flood affected</span>
-    <span class="n">origins</span><span class="p">[</span><span class="n">origins</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">flood_affected</span><span class="p">[</span><span class="s1">&#39;origin_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())]</span> \
+    <span class="n">homesteads</span><span class="p">[</span><span class="n">homesteads</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">flood_affected</span><span class="p">[</span><span class="s1">&#39;origin_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())]</span> \
         <span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;flood_affected_homesteads.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 
     <span class="c1">## Routes of all flood affected homesteads under normal conditions</span>
@@ -295,8 +292,7 @@ python3 setup.py install
 </div>
 <div class="section" id="access-isochrones">
 <h2>Access Isochrones<a class="headerlink" href="#access-isochrones" title="Permalink to this headline">¶</a></h2>
-<p>Here a route network is extracted from the eSwatini <a class="reference external" href="http://download.geofabrik.de">GeoFabrik extract</a> an AccessIsochrone is calculated using the <a class="reference external" href="https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua">default car profile</a> from <cite>osrm-backend</cite>.
-AccessIsochrone is provided by the <a class="reference external" href="https://github.com/ustroetz/python-osrm">python-osrm package</a>.</p>
+<p>Here a route network is extracted from the eSwatini <a class="reference external" href="http://download.geofabrik.de">GeoFabrik extract</a> and an AccessIsochrone is calculated using the default <a class="reference external" href="https://github.com/Project-OSRM/osrm-backend/blob/master/profiles/foot.lua">car profile</a>. The AccessIsochrone class is provided by the <a class="reference external" href="https://github.com/ustroetz/python-osrm">python-osrm package</a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tebetebe.analysis</span> <span class="k">import</span> <span class="n">AccessIsochrone</span>
 <span class="kn">import</span> <span class="nn">tebetebe</span> <span class="k">as</span> <span class="nn">tb</span>
 
@@ -319,109 +315,26 @@ AccessIsochrone is provided by the <a class="reference external" href="https://g
     <span class="n">contours</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;contour10.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="figure align-default" id="id12">
+<div class="figure align-default" id="id13">
 <a class="reference internal image-reference" href="_static/img/mbabane_isochrone.png"><img alt="_static/img/mbabane_isochrone.png" src="_static/img/mbabane_isochrone.png" style="width: 250px; height: 250px;" /></a>
-<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
 <hr class="docutils" />
 <div class="section" id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-tebetebe.RouteNetwork">
-<span id="tb-routenetwork"></span><h2>tb.RouteNetwork<a class="headerlink" href="#module-tebetebe.RouteNetwork" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="tebetebe.RouteNetwork.RouteNetwork">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">osm_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>.osm file from which a route network will be extracted</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>osm_path</strong> – Path to <a href="#id2"><span class="problematic" id="id3">*</span></a>.osm{.pbf} dataset</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of OSMDataset. If not provided, the .osm filename is used.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="tebetebe.RouteNetwork.RouteNetwork.from_overpass">
-<em class="property">classmethod </em><code class="sig-name descname">from_overpass</code><span class="sig-paren">(</span><em class="sig-param">query</em>, <em class="sig-param">name=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.from_overpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.from_overpass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query should <em>not</em> include an <cite>out</cite> directive (eg. [out:xml];)</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Name of the route network</p></li>
-<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite route network if it already exists on disk</p></li>
-<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save route network</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>OSMDataset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tebetebe.RouteNetwork.RouteNetwork.get_name">
-<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return route network name</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tebetebe.RouteNetwork.RouteNetwork.get_path">
-<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return route network path</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="tb-routingprofile">
-<h2>tb.RoutingProfile<a class="headerlink" href="#tb-routingprofile" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-tebetebe.RoutingProfile"></span><dl class="class">
-<dt id="tebetebe.RoutingProfile.RoutingProfile">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">lua_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>RoutingProfile is a .lua file with directives on how to turn a RouteNetwork
-into a routable OSRM file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lua_path</strong> (<em>str</em>) – Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.</p></li>
-<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename is used.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="tebetebe.RoutingProfile.RoutingProfile.get_name">
-<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return name of routing profile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tebetebe.RoutingProfile.RoutingProfile.get_path">
-<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return path of routing profile</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-tebetebe.Scenario">
 <span id="tb-scenario"></span><h2>tb.Scenario<a class="headerlink" href="#module-tebetebe.Scenario" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="tebetebe.Scenario.Scenario">
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.Scenario.</code><code class="sig-name descname">Scenario</code><span class="sig-paren">(</span><em class="sig-param">route_network</em>, <em class="sig-param">routing_profile</em>, <em class="sig-param">name=None</em>, <em class="sig-param">algorithm='MLD'</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/Scenario.html#Scenario"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.Scenario.Scenario" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Scenario is an abstraction of OSRM binaries in order to compile, serve, and query
-a routable network based upon an OSM dataset and routing profile.</p>
+<p>Scenario is an abstraction of OSRM executables in order to compile, serve, and query
+a routable network.</p>
 <p>A Scenario is initialized with (1) an OSM Route Network and (2) a Routing Profile. The
-Scenario is compiled when called, and provides a context manager to serve the compiled
-Scenario which can then be queried with a low-level API.</p>
+Scenario is compiled when called, and the class itself is a context manager to serve
+an HTTP API for the Scenario which can then be queried with a low-level API.</p>
 <p>The low-level API (<cite>match</cite>, <cite>nearest</cite>, <cite>simple_route</cite>, <cite>table</cite>, <cite>trip</cite>) is provided by
 the <cite>python-osrm</cite> module (<a class="reference external" href="https://github.com/ustroetz/python-osrm">https://github.com/ustroetz/python-osrm</a>)</p>
 <dl class="field-list simple">
@@ -637,14 +550,100 @@ with the route_geometry decoded (in WKT or WKB) if needed.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-tebetebe.RouteNetwork">
+<span id="tb-routenetwork"></span><h2>tb.RouteNetwork<a class="headerlink" href="#module-tebetebe.RouteNetwork" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tebetebe.RouteNetwork.RouteNetwork">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RouteNetwork.</code><code class="sig-name descname">RouteNetwork</code><span class="sig-paren">(</span><em class="sig-param">osm_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Raw OSM data from which a route network will be extracted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>osm_path</strong> – Path to <a href="#id2"><span class="problematic" id="id3">*</span></a>.osm{.pbf} dataset</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of OSMDataset. If not provided, the .osm filename is used.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.from_overpass">
+<em class="property">classmethod </em><code class="sig-name descname">from_overpass</code><span class="sig-paren">(</span><em class="sig-param">query</em>, <em class="sig-param">name=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">tmp_dir=PosixPath('/tmp')</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.from_overpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.from_overpass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a RouteNetwork by downloading result of an overpass query and saving as .osm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Query to be sent to overpass API. This query should <em>not</em> include an <cite>out</cite> directive (eg. [out:xml];)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the route network</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite route network if it already exists on disk</p></li>
+<li><p><strong>tmp_dir</strong> (<em>str</em>) – Temporary directory to save route network</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>OSMDataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return route network name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RouteNetwork.RouteNetwork.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RouteNetwork.html#RouteNetwork.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RouteNetwork.RouteNetwork.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return route network path</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="tb-routingprofile">
+<h2>tb.RoutingProfile<a class="headerlink" href="#tb-routingprofile" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-tebetebe.RoutingProfile"></span><dl class="class">
+<dt id="tebetebe.RoutingProfile.RoutingProfile">
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.RoutingProfile.</code><code class="sig-name descname">RoutingProfile</code><span class="sig-paren">(</span><em class="sig-param">lua_path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A RoutingProfile is a configuration script which represents a routing behaviour, such
+as for bike or car routing. It describes whether or not to traverse a particular type
+of way or node in OSM data, and the speed at which those elements are traversed.</p>
+<p>Check out the osrm-backend wiki for more information!
+<a class="reference external" href="https://github.com/Project-OSRM/osrm-backend/wiki/Profiles">https://github.com/Project-OSRM/osrm-backend/wiki/Profiles</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lua_path</strong> (<em>str</em>) – Path to .lua configuration script</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of routing profile. If not provided, the .lua filename is used.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="tebetebe.RoutingProfile.RoutingProfile.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of routing profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tebetebe.RoutingProfile.RoutingProfile.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/RoutingProfile.html#RoutingProfile.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.RoutingProfile.RoutingProfile.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path of routing profile</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-tebetebe.POIDataset">
 <span id="tb-poidataset"></span><h2>tb.POIDataset<a class="headerlink" href="#module-tebetebe.POIDataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="tebetebe.POIDataset.POIDataset">
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.POIDataset.</code><code class="sig-name descname">POIDataset</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">geopandas.geodataframe.GeoDataFrame</span></code></p>
-<p>Extension of a GeoDataFrame which stores only points, to be used as origin,
-destination, and waypoints in routing.</p>
+<p>Extension of a GeoDataFrame which stores Points only, to be used as origin, destination,
+and waypoints in routing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of POIDataset (required)</p>
@@ -659,7 +658,7 @@ destination, and waypoints in routing.</p>
 <dl class="method">
 <dt id="tebetebe.POIDataset.POIDataset.from_file">
 <em class="property">classmethod </em><code class="sig-name descname">from_file</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/POIDataset.html#POIDataset.from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.POIDataset.POIDataset.from_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize POIDataset from file</p>
+<dd><p>Initialize POIDataset from file. If no name is given, the filename will be used</p>
 </dd></dl>
 
 <dl class="method">
@@ -701,13 +700,13 @@ destination, and waypoints in routing.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Environment is a convenience class to set default options for the <cite>tebetebe</cite> base classes.</p>
 <p>Many of the <cite>tebetebe</cite> operations require writing a file to disk in order to be passed
-to the OSRM binaries, and it’s useful to set a uniform <cite>tmp_dir</cite> for a particular set of
+to the OSRM executables, and it’s useful to set a uniform <cite>tmp_dir</cite> for a particular set of
 commands so that all of these files generated by those commands are contained in the same place.</p>
 <p>In addition to <cite>tmp_dir</cite>, any <a href="#id4"><span class="problematic" id="id5">**</span></a>kwarg passed to Environment will be passed to all of the
 classes available under the Environment. Useful examples of these kwargs include <cite>verbose</cite>
 and <cite>overwrite</cite></p>
 <p>Any <a href="#id6"><span class="problematic" id="id7">**</span></a>kwargs set in Environment classes will be overridden if the argument is specified during
-class initialization.</p>
+subclass initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – Arbitrary keyword arguments to be passed to each class available under the Environment</p>
@@ -784,17 +783,19 @@ the background and need not be initialized directly.</p>
 <hr class="docutils" />
 <div class="section" id="analysis-plugins">
 <h1>Analysis Plugins<a class="headerlink" href="#analysis-plugins" title="Permalink to this headline">¶</a></h1>
+<p>Analysis plugins are classes written on top of the <cite>tebetebe</cite> base classes to automate
+routing analysis</p>
 <div class="section" id="tb-analysis-accessisochrone">
 <h2>tb.analysis.AccessIsochrone<a class="headerlink" href="#tb-analysis-accessisochrone" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-tebetebe.analysis.AccessIsochrone"></span><dl class="class">
 <dt id="tebetebe.analysis.AccessIsochrone.AccessIsochrone">
-<em class="property">class </em><code class="sig-prename descclassname">tebetebe.analysis.AccessIsochrone.</code><code class="sig-name descname">AccessIsochrone</code><span class="sig-paren">(</span><em class="sig-param">api</em>, <em class="sig-param">point_origin</em>, <em class="sig-param">points_grid=500</em>, <em class="sig-param">size=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/analysis/AccessIsochrone.html#AccessIsochrone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.analysis.AccessIsochrone.AccessIsochrone" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tebetebe.analysis.AccessIsochrone.</code><code class="sig-name descname">AccessIsochrone</code><span class="sig-paren">(</span><em class="sig-param">scenario</em>, <em class="sig-param">point_origin</em>, <em class="sig-param">points_grid=500</em>, <em class="sig-param">size=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/analysis/AccessIsochrone.html#AccessIsochrone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.analysis.AccessIsochrone.AccessIsochrone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">osrm.extra.AccessIsochrone</span></code></p>
 <p>Compute an access isochrone from an origin point with a given <cite>ScenarioAPI</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>api</strong> (<em>ScenarioAPI</em>) – API to be queried for access Isochrone</p></li>
+<li><p><strong>scenario</strong> (<a class="reference internal" href="tebetebe.html#tebetebe.Scenario.Scenario" title="tebetebe.Scenario.Scenario"><em>Scenario</em></a>) – Scenario to be queried for access isochrone</p></li>
 <li><p><strong>point_origin</strong> (<em>2-floats tuple</em>) – The coordinates of the center point to use as (x, y).</p></li>
 <li><p><strong>points_grid</strong> (<em>int</em>) – The number of points of the underlying grid to use.</p></li>
 <li><p><strong>size</strong> (<em>float</em>) – Search radius (in wgs84 degrees)</p></li>

@@ -155,8 +155,8 @@
 
 <div class="viewcode-block" id="POIDataset"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset">[docs]</a><span class="k">class</span> <span class="nc">POIDataset</span><span class="p">(</span><span class="n">GeoDataFrame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Extension of a GeoDataFrame which stores only points, to be used as origin,</span>
-<span class="sd">    destination, and waypoints in routing.</span>
+<span class="sd">    Extension of a GeoDataFrame which stores Points only, to be used as origin, destination,</span>
+<span class="sd">    and waypoints in routing.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -272,12 +272,12 @@
 
 <div class="viewcode-block" id="POIDataset.from_file"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.from_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Initialize POIDataset from file&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Initialize POIDataset from file. If no name is given, the filename will be used&#39;&#39;&#39;</span>
 
         <span class="n">gdf</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">POIDataset</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">gdf_points</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_filter_points</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gdf</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">gdf_points</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">gdf_points</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="POIDataset.from_features"><a class="viewcode-back" href="../../tebetebe.html#tebetebe.POIDataset.POIDataset.from_features">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_features</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

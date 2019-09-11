@@ -7,13 +7,17 @@ from . import defaults
 
 class RoutingProfile():
     '''
-    RoutingProfile is a .lua file with directives on how to turn a RouteNetwork
-    into a routable OSRM file
+    A RoutingProfile is a configuration script which represents a routing behaviour, such
+    as for bike or car routing. It describes whether or not to traverse a particular type
+    of way or node in OSM data, and the speed at which those elements are traversed.
+
+    Check out the osrm-backend wiki for more information!
+    https://github.com/Project-OSRM/osrm-backend/wiki/Profiles
 
     Parameters
     ----------
     lua_path: str
-        Path to .lua file. Note that all files referenced within that file (WayHandlers, etc) are relative to the .lua file path.
+        Path to .lua configuration script
     name: str, optional
         Name of routing profile. If not provided, the .lua filename is used.
     '''

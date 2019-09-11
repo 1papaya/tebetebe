@@ -12,8 +12,8 @@ from . import defaults
 
 class POIDataset(GeoDataFrame):
     '''
-    Extension of a GeoDataFrame which stores only points, to be used as origin,
-    destination, and waypoints in routing.
+    Extension of a GeoDataFrame which stores Points only, to be used as origin, destination,
+    and waypoints in routing.
 
     Parameters
     ----------
@@ -129,12 +129,12 @@ class POIDataset(GeoDataFrame):
 
     @classmethod
     def from_file(cls, path, name=None, **kwargs):
-        '''Initialize POIDataset from file'''
+        '''Initialize POIDataset from file. If no name is given, the filename will be used'''
 
         gdf = super(POIDataset, cls).from_file(path, **kwargs)
         gdf_points = cls._filter_points(cls, gdf)
 
-        return cls(gdf_points, name=name)
+        return cls(gdf_points, name=name if name else Path(path).stem)
 
     @classmethod
     def from_features(cls, features, name=None, **kwargs):

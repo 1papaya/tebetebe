@@ -150,8 +150,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    api : ScenarioAPI</span>
-<span class="sd">        API to be queried for access Isochrone</span>
+<span class="sd">    scenario : Scenario</span>
+<span class="sd">        Scenario to be queried for access isochrone</span>
 <span class="sd">    point_origin : 2-floats tuple</span>
 <span class="sd">        The coordinates of the center point to use as (x, y).</span>
 <span class="sd">    points_grid : int</span>
@@ -159,10 +159,10 @@
 <span class="sd">    size : float</span>
 <span class="sd">        Search radius (in wgs84 degrees)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">point_origin</span><span class="p">,</span> <span class="n">points_grid</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">point_origin</span><span class="p">,</span> <span class="n">points_grid</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">AccessIsochrone</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">point_origin</span><span class="p">,</span> <span class="n">points_grid</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
-                                              <span class="n">url_config</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+                                              <span class="n">url_config</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AccessIsochrone.get_center"><a class="viewcode-back" href="../../../index.html#tebetebe.analysis.AccessIsochrone.AccessIsochrone.get_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return center point used in isochrone calculations&quot;&quot;&quot;</span>
