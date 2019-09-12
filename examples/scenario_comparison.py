@@ -3,16 +3,17 @@ import tebetebe as tb
 
 tb_env = tb.Environment(tmp_dir="./tmp/scenario_comparison")
 
-## Get route network from GeoFabrik extract
-## Load the origins (homesteads) and dests (schools) 8km around river crossing from Overpass API
+## Get route network from GeoFabrik extract and POIs from Overpass API
+## Load the route origins (homesteads) and dests (schools) 8km around river crossing
+crossing_node_id = 6750683291
 highways = tb_env.OSMDataset("./tmp/swaziland-latest.osm.pbf", name="swazi")
-homesteads = tb_env.POIDataset.from_overpass("""node(6750683291)->.crossing;
+homesteads = tb_env.POIDataset.from_overpass("""node({})->.crossing;
                                                  ( way(around.crossing:8000)["building"];);
-                                                out center;""",
+                                                out center;""".format(crossing_node_id),
                                              name="homesteads")
-schools = tb_env.POIDataset.from_overpass("""node(6750683291)->.crossing;
+schools = tb_env.POIDataset.from_overpass("""node({})->.crossing;
                                                  ( way(around.crossing:8000)["amenity"="school"];);
-                                                out center;""",
+                                                out center;""".format(crossing_node_id),
                                           name="schools")
 
 ## Normal & Flood scenarios. Pass along an extra parameter to osrm-routed
@@ -29,7 +30,7 @@ parallel_scenarios = ParallelScenarios(normal, flood)
 
 with parallel_scenarios as scenarios:
     ## Compare origin:dest routes
-    comparison = RouteComparison(homesteads, schools)
+    comparison = RouteComparison(origins=homesteads, dests=schools)
 
     ## Routes that are different between scenarios
     flood_affected = comparison.get_difference(normal, flood)

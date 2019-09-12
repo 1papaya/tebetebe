@@ -20,11 +20,14 @@ class RoutingProfile():
         Path to .lua configuration script
     name: str, optional
         Name of routing profile. If not provided, the .lua filename is used.
+    default: bool, optional
+        If RoutingProfile is a default profile
     '''
 
-    def __init__(self, lua_path, name=None, **kwargs):
+    def __init__(self, lua_path, name=None, default=False, **kwargs):
         self.log = logging.getLogger(defaults.LOGGER)
         self.path = Path(lua_path)
+        self.default = default
 
         ## Check path exists
         if not self.path.is_file():
@@ -32,6 +35,10 @@ class RoutingProfile():
 
         ## Set profile name to lua filename if not specified
         self.name = name if name else self.path.stem
+
+    def is_default(self):
+        """Return if routing profile is a default or not"""
+        return self.default
 
     def get_name(self):
         """Return name of routing profile"""

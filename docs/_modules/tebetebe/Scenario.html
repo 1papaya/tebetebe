@@ -169,11 +169,23 @@
 <span class="sd">    a routable network.</span>
 
 <span class="sd">    A Scenario is initialized with (1) an OSM Dataset and (2) a Routing Profile. When called,</span>
-<span class="sd">    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network, and</span>
-<span class="sd">    provides a context manager to serve and query the HTTP API for the Scenario.</span>
+<span class="sd">    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network,</span>
+<span class="sd">    provides a context manager to serve the scenario&#39;s HTTP API, and returns various methods</span>
+<span class="sd">    to query that API.</span>
 
-<span class="sd">    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by</span>
+<span class="sd">    The HTTP API methods (`match`, `nearest`, `simple_route`, `table`, `trip`) are provided by</span>
 <span class="sd">    the `python-osrm` module (https://github.com/ustroetz/python-osrm)</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; from tebetebe.profiles import foot</span>
+<span class="sd">    &gt;&gt;&gt; import tebetebe as tb</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; ## initialize scenario with GeoFabrik extract &amp; default foot profile</span>
+<span class="sd">    &gt;&gt;&gt; scenario = tb.Scenario(&quot;./swaziland-latest.osm.pbf&quot;, foot)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; with scenario() as api: ## compile scenario and serve HTTP API</span>
+<span class="sd">    &gt;&gt;&gt;     api.simple_route()... ## query HTTP API for a simple route, match, nearest, trip...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -242,7 +254,7 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Compile OSMDataset and RoutingProfile into a routable network</span>
+<span class="sd">        Compile OSMDataset and RoutingProfile into an OSRM routable network (.osrm file)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="c1">## Honor overwrite settings</span>
@@ -259,6 +271,10 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Compiling scenario (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">routing_profile</span><span class="o">.</span><span class="n">is_default</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Default </span><span class="si">{}</span><span class="s2"> profile may not be accurate for your use case&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                                                                       <span class="bp">self</span><span class="o">.</span><span class="n">routing_profile</span><span class="o">.</span><span class="n">get_name</span><span class="p">()))</span>
 
             <span class="c1">## Run osrm-extract</span>
             <span class="n">extr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OSRM</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">osm_dataset</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span>
@@ -350,7 +366,7 @@
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="c1">## TODO handle common exceptions</span>
         <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="n">HTTPError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="n">HTTPError</span><span class="p">:</span> <span class="c1">## Log but not exit on HTTP Errors</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc_value</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>

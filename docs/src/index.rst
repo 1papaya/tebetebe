@@ -4,7 +4,7 @@
 tebetebe: routing analysis with OSM
 ############
 
-`tebetebe <https://github.com/1papaya/tebetebe>`_ is a Python API to compile, serve, and query routable networks using the `Open Source Routing Machine <https://project-osrm.org>`_ (OSRM) and `OpenStreetMap <https://openstreetmap.org>`_ data, and a framework for routing analysis using these networks.
+`tebetebe <https://github.com/1papaya/tebetebe>`_ is a Python API to compile, serve, and query routable networks using the `Open Source Routing Machine <https://project-osrm.org>`_ (OSRM) and `OpenStreetMap <https://openstreetmap.org>`_ data, and provides a framework for routing analysis using these networks.
 
 Installation
 ************
@@ -17,19 +17,17 @@ Installation
 
 2. Clone `tebetebe <https://github.com/1papaya/tebetebe>`_ source code and install
 ----
-  .. code:: shell
+  .. code:: text
 
      git clone https://github.com/1papaya/tebetebe.git
      python3 setup.py install
 
-^^^^
+
+*note:* tebetebe will not work on Windows machines
 
 ########
 Examples
 ########
-
-RoutingProfiles referenced by the examples can be found in the `/examples/ folder
-<https://github.com/1papaya/tebetebe/tree/master/examples>`_ of the GitHub repo.
 
 Simple Scenario
 ***************
@@ -41,6 +39,10 @@ This example uses the eSwatini GeoFabrik extract and the `default walking profil
 .. code-block:: shell
    :caption: Simple Scenario output
 
+    [   INFO] swaziland-latest_foot: Compiling scenario (MLD)
+    [WARNING] swaziland-latest_foot: Default foot profile may not be accurate for your use case
+    [   INFO] swaziland-latest_foot: Initializing scenario
+    [   INFO] swaziland-latest_foot: Ready for requests
     Walking from Simunye to Mbabane
      Duration: 1420.70 minutes
      Distance: 118.39 km
@@ -52,9 +54,23 @@ By comparing origin:destination routes between different scenarios, we gain insi
 
 Here, we compare routes calculated by two different Scenarios: a "normal" walking scenario, and a "flood" scenario, to understand the impact of a flooding event on access to local schools in eSwatini. The route network is taken from the eSwatini GeoFabrik extract, and the homesteads (origins) and schools (destinations) are downloaded from the Overpass API.
 
-The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenari considers nodes with ``ford=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier.
+The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenaro considers nodes with ``ford=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier. Check out their source in `the GitHub repo 
+<https://github.com/1papaya/tebetebe/tree/master/examples>`_
 
 .. literalinclude:: ../../examples/scenario_comparison.py
+
+.. code-block:: text
+   :caption: Scenario Comparison output
+
+    [   INFO] Downloading POIDataset homesteads
+    [   INFO] Downloading POIDataset schools
+    [   INFO] normal: Compiling scenario (MLD)
+    [   INFO] normal: Initializing scenario
+    [   INFO] normal: Ready for requests
+    [   INFO] flood: Compiling scenario (MLD)
+    [   INFO] flood: Initializing scenario
+    [   INFO] flood: Ready for requests
+
 
 Access Isochrones
 ***************
@@ -63,12 +79,19 @@ Here a route network is extracted from the eSwatini `GeoFabrik extract <http://d
 
 .. literalinclude:: ../../examples/access_isochrones.py
 
+.. code-block:: text
+   :caption: Access Isochrones output
+
+    [   INFO] swaziland-latest_car: Compiling scenario (MLD)
+    [WARNING] swaziland-latest_car: Default car profile may not be accurate for your use case
+    [   INFO] swaziland-latest_car: Initializing scenario
+    [   INFO] swaziland-latest_car: Ready for requests
+
 .. figure:: _static/img/mbabane_isochrone.png
    :height: 250px
    :width: 250px
 
    Result visualized over OSM Carto basemap
-
 ^^^^
 
 ########

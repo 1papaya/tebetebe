@@ -26,11 +26,23 @@ class Scenario():
     a routable network.
 
     A Scenario is initialized with (1) an OSM Dataset and (2) a Routing Profile. When called,
-    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network, and
-    provides a context manager to serve and query the HTTP API for the Scenario.
+    Scenario compiles the OSMDataset and RoutingProfile into an OSRM routable network,
+    provides a context manager to serve the scenario's HTTP API, and returns various methods
+    to query that API.
 
-    The low-level API (`match`, `nearest`, `simple_route`, `table`, `trip`) is provided by
+    The HTTP API methods (`match`, `nearest`, `simple_route`, `table`, `trip`) are provided by
     the `python-osrm` module (https://github.com/ustroetz/python-osrm)
+
+    Example
+    -------
+    >>> from tebetebe.profiles import foot
+    >>> import tebetebe as tb
+    >>>
+    >>> ## initialize scenario with GeoFabrik extract & default foot profile
+    >>> scenario = tb.Scenario("./swaziland-latest.osm.pbf", foot)
+    >>>
+    >>> with scenario() as api: ## compile scenario and serve HTTP API
+    >>>     api.simple_route()... ## query HTTP API for a simple route, match, nearest, trip...
 
     Parameters
     ----------
@@ -99,7 +111,7 @@ class Scenario():
 
     def __call__(self):
         '''
-        Compile OSMDataset and RoutingProfile into a routable network
+        Compile OSMDataset and RoutingProfile into an OSRM routable network (.osrm file)
         '''
 
         ## Honor overwrite settings
@@ -116,6 +128,10 @@ class Scenario():
 
         try:
             self.log.info("{}: Compiling scenario ({})".format(self.name, self.algorithm))
+
+            if self.routing_profile.is_default():
+                self.log.warning("{}: Default {} profile may not be accurate for your use case".format(self.name,
+                                                                                                       self.routing_profile.get_name()))
 
             ## Run osrm-extract
             extr = self.OSRM.extract(self.osm_dataset.get_path(),
@@ -207,7 +223,7 @@ class Scenario():
     def __exit__(self, exc_type, exc_value, traceback):
         ## TODO handle common exceptions
         if exc_type:
-            if exc_type is HTTPError:
+            if exc_type is HTTPError: ## Log but not exit on HTTP Errors
                 self.log.error(exc_value)
                 return True
             else:

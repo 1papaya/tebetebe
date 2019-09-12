@@ -25,21 +25,9 @@ class POIDataset(GeoDataFrame):
         if name is None:
             raise ValueError("Must specify name for POIDataset")
         else:
-            self.set_name(name)
+            setattr(self, "_metadata", {"name": name})
 
-        super(GeoDataFrame, self).__init__(*args, **kwargs)
-
-        ## TODO figure out why this is sometimes necessary...
-        if not hasattr(self, "crs"):
-            self.crs = {'init': 'epsg:4326'}
-
-    def set_name(self, name):
-        '''Set POI dataset name'''
-
-        if hasattr(self, "_metadata") and isinstance(self._metadata, dict):
-            self._metadata["name"] = name
-        else:
-            self._metadata = {"name": name}
+        super(POIDataset, self).__init__(*args, **kwargs)
 
     def get_name(self):
         """Return POI dataset name"""
@@ -131,7 +119,7 @@ class POIDataset(GeoDataFrame):
     def from_file(cls, path, name=None, **kwargs):
         '''Initialize POIDataset from file. If no name is given, the filename will be used'''
 
-        gdf = super(POIDataset, cls).from_file(path, **kwargs)
+        gdf = GeoDataFrame.from_file(path, **kwargs)
         gdf_points = cls._filter_points(cls, gdf)
 
         return cls(gdf_points, name=name if name else Path(path).stem)
@@ -140,7 +128,7 @@ class POIDataset(GeoDataFrame):
     def from_features(cls, features, name=None, **kwargs):
         '''Initialize POIDataset from GeoJSON features'''
 
-        gdf = super(POIDataset, cls).from_features(features, **kwargs)
+        gdf = GeoDataFrame.from_features(features, **kwargs)
         gdf_points = cls._filter_points(cls, gdf)
 
         return cls(gdf_points, name=name)

@@ -1,17 +1,14 @@
 from tebetebe.analysis import AccessIsochrone
+from tebetebe.profiles import car
 import tebetebe as tb
 
-tb_env = tb.Environment(tmp_dir="./tmp/access_isochrones",
-                        overwrite=False, verbose=False)
-
+tb_env = tb.Environment(tmp_dir="./tmp/access_isochrones")
 mbabane = (31.1367, -26.3054)
 
-## Initialize scenario with extract from GeoFabrik and car profile
-## http://download.geofabrik.de/africa/swaziland-latest.osm.pbf
-scenario = tb_env.Scenario("./tmp/swaziland-latest.osm.pbf",
-                           "./profiles/car.lua")
+## Initialize scenario with GeoFabrik extract and default car profile
+scenario = tb_env.Scenario("./tmp/swaziland-latest.osm.pbf", car)
 
-## Run scenario
+## Compile and run scenario
 with scenario() as api:
     isochrone = AccessIsochrone(api, mbabane, points_grid=1000, size=0.2)
     contours = isochrone.render_contour(10)
