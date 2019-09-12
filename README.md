@@ -1,8 +1,15 @@
-# tebetebe: routing analysis with OSM
+## tebetebe: python routing analysis with OSRM and OpenStreetMap
 
-[tebetebe](https://github.com/1papaya/tebetebe) is a Python API for the [Open Source Routing Machine](https://project-osrm.org) (OSRM) to compile, serve, and query routable networks using [OpenStreetMap](https://openstreetmap.org) data.
+[tebetebe](https://github.com/1papaya/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data, and provides a framework for routing analysis using these networks.
 
-## Installation
+*tebetebe* makes it easy to compile a custom routing "Scenario" by abstracting OSRM executables into a pythonic API, and allows for accurate, reproducible, and *readable* routing analysis to be developed.
+
+Examples of routing analysis include:
+* accessibility analysis (*how far away are residents from social services?*)
+* vulnerability analysis (*if a bridge were to collapse, who would be affected?*)
+* hitchhiking analysis (*which highway onramps are likely to have the most traffic?*)
+
+### Installation
 
 1. **Install osrm-backend binaries**
 
@@ -15,12 +22,15 @@
      git clone https://github.com/1papaya/tebetebe.git
      python3 setup.py install
    ```
-
-## [Documentation](https://1papaya.github.io/tebetebe)
    
-### Simple Example
+### Documentation
 
-Calculate the route from Mbabane to Simunye using a walking scenario. Check out the [Documentation](https://1papaya.github.io/tebetebe) for more examples!
+* [Examples](https://1papaya.github.io/tebetebe/#examples)
+* [API Documentation](https://1papaya.github.io/tebetebe/#api-documentation)
+   
+### Simple Scenario Example
+
+Calculate the route from Mbabane to Simunye using the default walking scenario. Check out the [Documentation](https://1papaya.github.io/tebetebe) for more examples!
 
 ```python
 import tebetebe as tb
