@@ -6,6 +6,19 @@ tebetebe: routing analysis with OSM
 
 `tebetebe <https://github.com/1papaya/tebetebe>`_ is a Python API to compile, serve, and query routable networks using the `Open Source Routing Machine <https://project-osrm.org>`_ (OSRM) and `OpenStreetMap <https://openstreetmap.org>`_ data, and provides a framework for routing analysis using these networks.
 
+Package Overview
+********
+
+`tebetebe` makes it easy to compile a custom routing `Scenario` by abstracting OSRM executables into a pythonic API, and provides a wide opporunity to customize these scenarios and run various types of routing analysis.
+
+With the range of customization available in the .lua configuration files, specific accurate and *readable* transportation models can be developed to be fed into other types of analysis.
+
+Examples of routing analysis include: accessibility analysis (`how far away are residents from social services?`), vulnerability analysis (`if a bridge were to collapse, who would be affected?`), and hitchhiking analysis (`which roads are likely to have the most traffic?`)
+
+`tebetebe` also simplifies the routing analysis pipeline by enabling data to be pulled live from the Overpass API and modified programmatically by Osmium. Finally, the package contains various user-contributed classes which automate common tasks in routing analysis, such as isochrones.
+
+Comments, suggestions, and contributions are welcomed!
+
 Installation
 ************
 

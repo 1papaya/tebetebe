@@ -81,6 +81,7 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">tebetebe: routing analysis with OSM</a><ul>
+<li><a class="reference internal" href="#package-overview">Package Overview</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 </ul>
 </li>
@@ -172,6 +173,14 @@
   <div class="section" id="tebetebe-routing-analysis-with-osm">
 <h1>tebetebe: routing analysis with OSM<a class="headerlink" href="#tebetebe-routing-analysis-with-osm" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://github.com/1papaya/tebetebe">tebetebe</a> is a Python API to compile, serve, and query routable networks using the <a class="reference external" href="https://project-osrm.org">Open Source Routing Machine</a> (OSRM) and <a class="reference external" href="https://openstreetmap.org">OpenStreetMap</a> data, and provides a framework for routing analysis using these networks.</p>
+<div class="section" id="package-overview">
+<h2>Package Overview<a class="headerlink" href="#package-overview" title="Permalink to this headline">¶</a></h2>
+<p><cite>tebetebe</cite> makes it easy to compile a custom routing <cite>Scenario</cite> by abstracting OSRM executables into a pythonic API, and provides a wide opporunity to customize these scenarios and run various types of routing analysis.</p>
+<p>With the range of customization available in the .lua configuration files, specific accurate and <em>readable</em> transportation models can be developed to be fed into other types of analysis.</p>
+<p>Examples of routing analysis include: accessibility analysis (<cite>how far away are residents from social services?</cite>), vulnerability analysis (<cite>if a bridge were to collapse, who would be affected?</cite>), and hitchhiking analysis (<cite>which roads are likely to have the most traffic?</cite>)</p>
+<p><cite>tebetebe</cite> also simplifies the routing analysis pipeline by enabling data to be pulled live from the Overpass API and modified programmatically by Osmium. Finally, the package contains various user-contributed classes which automate common tasks in routing analysis, such as isochrones.</p>
+<p>Comments, suggestions, and contributions are welcomed!</p>
+</div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="install-osrm-backend-binaries">
