@@ -1,2 +1,4 @@
+prune docs/
+prune examples/
 include tebetebe/profiles/**.lua
 include tebetebe/profiles/**/**.lua

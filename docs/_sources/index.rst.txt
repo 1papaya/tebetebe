@@ -9,15 +9,9 @@ tebetebe: routing analysis with OSM
 Package Overview
 ********
 
-`tebetebe` makes it easy to compile a custom routing `Scenario` by abstracting OSRM executables into a pythonic API, and provides a wide opporunity to customize these scenarios and run various types of routing analysis.
+`tebetebe` makes it easy to compile a custom routing `Scenario` by abstracting OSRM executables into a pythonic API and provides a framework for routing analysis. With the range of customization available in the .lua configuration scripts, specific, accurate and *readable* transportation models can be developed and analyzed.
 
-With the range of customization available in the .lua configuration files, specific accurate and *readable* transportation models can be developed to be fed into other types of analysis.
-
-Examples of routing analysis include: accessibility analysis (`how far away are residents from social services?`), vulnerability analysis (`if a bridge were to collapse, who would be affected?`), and hitchhiking analysis (`which roads are likely to have the most traffic?`)
-
-`tebetebe` also simplifies the routing analysis pipeline by enabling data to be pulled live from the Overpass API and modified programmatically by Osmium. Finally, the package contains various user-contributed classes which automate common tasks in routing analysis, such as isochrones.
-
-Comments, suggestions, and contributions are welcomed!
+`tebetebe` also simplifies the routing analysis pipeline by enabling data to be pulled live from the OSM via the Overpass API and providing various user-contributed classes which automate common routing analysis tasks, such as isochrones.
 
 Installation
 ************
@@ -28,7 +22,13 @@ Installation
   * See the `osrm-backend wiki for instructions <https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM>`_ on how to build and install from source.
   * Note that the `osrm-backend` Docker images are not supported for use with tebetebe.
 
-2. Clone `tebetebe <https://github.com/1papaya/tebetebe>`_ source code and install
+2. (option 1) Install from pip
+----
+  .. code:: text
+
+     pip3 install tebetebe
+
+2. (option 2) Clone `tebetebe <https://github.com/1papaya/tebetebe>`_ source code and install
 ----
   .. code:: text
 
@@ -67,7 +67,8 @@ By comparing origin:destination routes between different scenarios, we gain insi
 
 Here, we compare routes calculated by two different Scenarios: a "normal" walking scenario, and a "flood" scenario, to understand the impact of a flooding event on access to local schools in eSwatini. The route network is taken from the eSwatini GeoFabrik extract, and the homesteads (origins) and schools (destinations) are downloaded from the Overpass API.
 
-The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenaro considers nodes with ``ford=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier. Check out their source in `the GitHub repo 
+The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenaro considers nodes with ``forwith open("README.md", "r") as fh:
+    long_description = fh.read()d=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier. Check out their source in `the GitHub repo 
 <https://github.com/1papaya/tebetebe/tree/master/examples>`_
 
 .. literalinclude:: ../../examples/scenario_comparison.py
@@ -84,6 +85,10 @@ The "normal"  and "flood" scenarios in this case are both the default walk profi
     [   INFO] flood: Initializing scenario
     [   INFO] flood: Ready for requests
 
+.. figure:: _static/img/scenario-comparison.png
+   :width: 768px
+
+   Scenario Comparison results visualized in QGIS. Flood Affected homesteads (Green), Normal Routes (Pink), Flood Routes (Yellow)
 
 Access Isochrones
 ***************

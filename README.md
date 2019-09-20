@@ -1,13 +1,8 @@
-## tebetebe: python routing analysis with OSRM and OpenStreetMap
+## tebetebe: python routing analysis with OSRM
 
-[tebetebe](https://github.com/1papaya/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data, and provides a framework for routing analysis using these networks.
+[tebetebe](https://github.com/1papaya/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data, and provides various classes to perform routing analysis using these networks.
 
-*tebetebe* makes it easy to compile a custom routing "Scenario" by abstracting OSRM executables into a pythonic API, and allows for accurate, reproducible, and *readable* routing analysis to be developed.
-
-Examples of routing analysis include:
-* accessibility analysis (*how far away are residents from social services?*)
-* vulnerability analysis (*if a bridge were to collapse, who would be affected?*)
-* hitchhiking analysis (*which highway onramps are likely to have the most traffic?*)
+*tebetebe* abstracts OSRM executables into a pythonic API, making it easy to generate a custom routing "Scenario" and develop reproducible, readable routing analysis.
 
 ### Installation
 
@@ -16,7 +11,13 @@ Examples of routing analysis include:
    * See the [osrm-backend wiki for instructions](https://github.com/Project-OSRM/osrm-backend/wiki/Building-OSRM) on how to build and install the binaries from source
    * osrm-backend Docker images are currently not supported for use with tebetebe
    
-2. **Clone tebetebe source code and install**
+2. (option 1) **Install from pip**
+
+   ```shell
+     pip3 install tebetebe
+   ```
+
+3. (option 2) **Clone tebetebe source code and install**
 
    ```shell
      git clone https://github.com/1papaya/tebetebe.git
