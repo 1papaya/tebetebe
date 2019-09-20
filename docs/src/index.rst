@@ -67,8 +67,7 @@ By comparing origin:destination routes between different scenarios, we gain insi
 
 Here, we compare routes calculated by two different Scenarios: a "normal" walking scenario, and a "flood" scenario, to understand the impact of a flooding event on access to local schools in eSwatini. The route network is taken from the eSwatini GeoFabrik extract, and the homesteads (origins) and schools (destinations) are downloaded from the Overpass API.
 
-The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenaro considers nodes with ``forwith open("README.md", "r") as fh:
-    long_description = fh.read()d=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier. Check out their source in `the GitHub repo 
+The "normal"  and "flood" scenarios in this case are both the default walk profile, except that the "flood" scenaro considers nodes with ``ford=yes`` (river crossings), and ways with ``flood_prone=yes`` to be a barrier. Check out their source in `the GitHub repo 
 <https://github.com/1papaya/tebetebe/tree/master/examples>`_
 
 .. literalinclude:: ../../examples/scenario_comparison.py

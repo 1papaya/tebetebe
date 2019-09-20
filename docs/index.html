@@ -238,8 +238,8 @@ python3 setup.py install
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Distance: </span><span class="si">{:.2f}</span><span class="s2"> km&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-text">Simple Scenario output</span><a class="headerlink" href="#id16" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-text">Simple Scenario output</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span> <span class="o">[</span>   INFO<span class="o">]</span> swaziland-latest_foot: Compiling scenario <span class="o">(</span>MLD<span class="o">)</span>
  <span class="o">[</span>WARNING<span class="o">]</span> swaziland-latest_foot: Default foot profile may not be accurate <span class="k">for</span> your use <span class="k">case</span>
  <span class="o">[</span>   INFO<span class="o">]</span> swaziland-latest_foot: Initializing scenario
@@ -255,11 +255,7 @@ python3 setup.py install
 <h2>Scenario Comparison<a class="headerlink" href="#scenario-comparison" title="Permalink to this headline">¶</a></h2>
 <p>By comparing origin:destination routes between different scenarios, we gain insight about how changing a transportation scenario affects route patterns.</p>
 <p>Here, we compare routes calculated by two different Scenarios: a “normal” walking scenario, and a “flood” scenario, to understand the impact of a flooding event on access to local schools in eSwatini. The route network is taken from the eSwatini GeoFabrik extract, and the homesteads (origins) and schools (destinations) are downloaded from the Overpass API.</p>
-<dl class="simple">
-<dt>The “normal”  and “flood” scenarios in this case are both the default walk profile, except that the “flood” scenaro considers nodes with <a href="#id2"><span class="problematic" id="id3">``</span></a>forwith open(“README.md”, “r”) as fh:</dt><dd><p>long_description = fh.read()d=yes`` (river crossings), and ways with <code class="docutils literal notranslate"><span class="pre">flood_prone=yes</span></code> to be a barrier. Check out their source in <a href="#id4"><span class="problematic" id="id5">`</span></a>the GitHub repo</p>
-</dd>
-</dl>
-<p>&lt;<a class="reference external" href="https://github.com/1papaya/tebetebe/tree/master/examples">https://github.com/1papaya/tebetebe/tree/master/examples</a>&gt;`_</p>
+<p>The “normal”  and “flood” scenarios in this case are both the default walk profile, except that the “flood” scenaro considers nodes with <code class="docutils literal notranslate"><span class="pre">ford=yes</span></code> (river crossings), and ways with <code class="docutils literal notranslate"><span class="pre">flood_prone=yes</span></code> to be a barrier. Check out their source in <a class="reference external" href="https://github.com/1papaya/tebetebe/tree/master/examples">the GitHub repo</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tebetebe.analysis</span> <span class="k">import</span> <span class="n">ParallelScenarios</span><span class="p">,</span> <span class="n">RouteComparison</span>
 <span class="kn">import</span> <span class="nn">tebetebe</span> <span class="k">as</span> <span class="nn">tb</span>
 
@@ -310,8 +306,8 @@ python3 setup.py install
         <span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;flood_affected_flood_routes.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-text">Scenario Comparison output</span><a class="headerlink" href="#id17" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Scenario Comparison output</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> [   INFO] Downloading POIDataset homesteads
  [   INFO] Downloading POIDataset schools
  [   INFO] normal: Compiling scenario (MLD)
@@ -323,9 +319,9 @@ python3 setup.py install
 </pre></div>
 </div>
 </div>
-<div class="figure align-default" id="id18">
+<div class="figure align-default" id="id14">
 <a class="reference internal image-reference" href="_static/img/scenario-comparison.png"><img alt="_static/img/scenario-comparison.png" src="_static/img/scenario-comparison.png" style="width: 768px;" /></a>
-<p class="caption"><span class="caption-text">Scenario Comparison results visualized in QGIS. Flood Affected homesteads (Green), Normal Routes (Pink), Flood Routes (Yellow)</span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Scenario Comparison results visualized in QGIS. Flood Affected homesteads (Green), Normal Routes (Pink), Flood Routes (Yellow)</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="access-isochrones">
@@ -350,8 +346,8 @@ python3 setup.py install
     <span class="n">contours</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">tb_env</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">/</span> <span class="s2">&quot;contour10.geojson&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GeoJSON&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id19">
-<div class="code-block-caption"><span class="caption-text">Access Isochrones output</span><a class="headerlink" href="#id19" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-text">Access Isochrones output</span><a class="headerlink" href="#id15" title="Permalink to this code">¶</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> [   INFO] swaziland-latest_car: Compiling scenario (MLD)
  [WARNING] swaziland-latest_car: Default car profile may not be accurate for your use case
  [   INFO] swaziland-latest_car: Initializing scenario
@@ -359,9 +355,9 @@ python3 setup.py install
 </pre></div>
 </div>
 </div>
-<div class="figure align-default" id="id20">
+<div class="figure align-default" id="id16">
 <a class="reference internal image-reference" href="_static/img/mbabane_isochrone.png"><img alt="_static/img/mbabane_isochrone.png" src="_static/img/mbabane_isochrone.png" style="width: 250px; height: 250px;" /></a>
-<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id20" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Result visualized over OSM Carto basemap</span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -616,7 +612,7 @@ with the route_geometry decoded (in WKT or WKB) if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>osm_path</strong> – Path to <a href="#id6"><span class="problematic" id="id7">*</span></a>.osm{.pbf} dataset</p></li>
+<li><p><strong>osm_path</strong> – Path to <a href="#id2"><span class="problematic" id="id3">*</span></a>.osm{.pbf} dataset</p></li>
 <li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of OSMDataset. If not provided, the .osm filename is used.</p></li>
 </ul>
 </dd>
@@ -759,10 +755,10 @@ and waypoints in routing.</p>
 <p>Many of the <cite>tebetebe</cite> operations require writing a file to disk in order to be passed
 to the OSRM executables, and it’s useful to set a uniform <cite>tmp_dir</cite> for a particular set of
 commands so that all of these files generated by those commands are contained in the same place.</p>
-<p>In addition to <cite>tmp_dir</cite>, any <a href="#id8"><span class="problematic" id="id9">**</span></a>kwarg passed to Environment will be passed to all of the
+<p>In addition to <cite>tmp_dir</cite>, any <a href="#id4"><span class="problematic" id="id5">**</span></a>kwarg passed to Environment will be passed to all of the
 classes available under the Environment. Useful examples of these kwargs include <cite>verbose</cite>
 and <cite>overwrite</cite></p>
-<p>Any <a href="#id10"><span class="problematic" id="id11">**</span></a>kwargs set in Environment classes will be overridden if the argument is specified during
+<p>Any <a href="#id6"><span class="problematic" id="id7">**</span></a>kwargs set in Environment classes will be overridden if the argument is specified during
 subclass initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -779,7 +775,7 @@ subclass initialization.</p>
 <em class="property">class </em><code class="sig-prename descclassname">tebetebe.OSRM.</code><code class="sig-name descname">OSRM</code><span class="sig-paren">(</span><em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tebetebe/OSRM.html#OSRM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tebetebe.OSRM.OSRM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class wrapper around all the osrm-* binaries. All functions accept
-additional <a href="#id12"><span class="problematic" id="id13">**</span></a>kwargs to be passed upon execution. This class is used in
+additional <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs to be passed upon execution. This class is used in
 the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -823,7 +819,7 @@ the background and need not be initialized directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id14"><span class="problematic" id="id15">*</span></a>.osrm</p></li>
+<li><p><strong>osrm_file</strong> (<em>str</em>) – Path to <a href="#id10"><span class="problematic" id="id11">*</span></a>.osrm</p></li>
 <li><p><strong>ready_callback</strong> (<em>function</em>) – Function to be called when osrm-routed is ready for HTTP requests</p></li>
 <li><p><strong>done_callback</strong> (<em>function</em>) – Function to be called when osrm-routed has exited</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – <cite>osrm-routed</cite> output is so verbose it is default off even if the parent class <cite>verbose=True</cite>. Set this to true if you want to see <cite>osrm-routed</cite> output anyway.</p></li>
