@@ -3,3 +3,4 @@ __pycache__/
 docs/_build/
 examples/tmp
 dist/
+build/
