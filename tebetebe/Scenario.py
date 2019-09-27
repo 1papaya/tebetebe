@@ -275,7 +275,7 @@ class Scenario():
     def is_alive(self):
         """True if Scenario process is running, False otherwise"""
         if hasattr(self, "process") and hasattr(self.process, "process"):
-            return self.process.process.is_alive()
+            return self.process.process.is_alive()[0]
         else:
             return False
 

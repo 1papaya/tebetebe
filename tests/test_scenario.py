@@ -23,12 +23,9 @@ class ScenarioTestCase(unittest.TestCase):
                                          name="flood")
 
         ## Delete scenarios so recompiled for each test
-        self.delete_scenario(self.s_normal)
-        self.delete_scenario(self.s_flood)
-
-    def delete_scenario(self, scenario):
-        if scenario.path.is_file():
-            scenario.path.unlink()
+        for scenario in [self.s_normal, self.s_flood]:
+            if scenario.path.is_file():
+                scenario.path.unlink()
 
     def test_scenario_compile(self):
         tst_scenario = self.s_normal
@@ -40,7 +37,7 @@ class ScenarioTestCase(unittest.TestCase):
         tst_scenario = self.s_normal
 
         with tst_scenario() as scn:
-            assert scn.process.process.is_alive()[0] == True, "Scenario not alive after context manager execution"
+            assert scn.process.process.is_alive() == True, "Scenario not alive after context manager execution"
 
 if __name__ == '__main__':
     unittest.main()
