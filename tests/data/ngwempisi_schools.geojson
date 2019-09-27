@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "ngwempisi_schools",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "osm_id": null, "osm_way_id": "721959090", "name": "Cana High", "type": null, "aeroway": null, "amenity": "school", "admin_level": null, "barrier": null, "boundary": null, "building": null, "craft": null, "geological": null, "historic": null, "land_area": null, "landuse": null, "leisure": null, "man_made": null, "military": null, "natural": null, "office": null, "place": null, "shop": null, "sport": null, "tourism": null, "other_tags": "\"isced:level\"=>\"3\"" }, "geometry": { "type": "Point", "coordinates": [ 30.998192, -26.758143 ] } },
+{ "type": "Feature", "properties": { "osm_id": null, "osm_way_id": "721959089", "name": "Cana Primary", "type": null, "aeroway": null, "amenity": "school", "admin_level": null, "barrier": null, "boundary": null, "building": null, "craft": null, "geological": null, "historic": null, "land_area": null, "landuse": null, "leisure": null, "man_made": null, "military": null, "natural": null, "office": null, "place": null, "shop": null, "sport": null, "tourism": null, "other_tags": "\"isced:level\"=>\"1\"" }, "geometry": { "type": "Point", "coordinates": [ 31.001054, -26.757351 ] } },
+{ "type": "Feature", "properties": { "osm_id": null, "osm_way_id": "718997017", "name": "Tsawela Primary", "type": null, "aeroway": null, "amenity": "school", "admin_level": null, "barrier": null, "boundary": null, "building": null, "craft": null, "geological": null, "historic": null, "land_area": null, "landuse": null, "leisure": null, "man_made": null, "military": null, "natural": null, "office": null, "place": null, "shop": null, "sport": null, "tourism": null, "other_tags": "\"isced:level\"=>\"1\"" }, "geometry": { "type": "Point", "coordinates": [ 31.028429, -26.761615 ] } }
+]
+}
