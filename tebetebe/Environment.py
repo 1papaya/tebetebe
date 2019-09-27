@@ -41,3 +41,5 @@ class Environment():
 
         self.OSMDataset.from_overpass = partial(OSMDataset.from_overpass, **kwargs)
         self.POIDataset.from_overpass = partial(POIDataset.from_overpass, **kwargs)
+
+        self.POIDataset.from_file = partial(POIDataset.from_file, **kwargs)
