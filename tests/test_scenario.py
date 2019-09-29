@@ -1,8 +1,10 @@
 import tebetebe as tb
 import unittest
+import logging
 
 class ScenarioTestCase(unittest.TestCase):
     def setUp(self):
+        #logging.getLogger(tb.defaults.LOGGER).setLevel(100) ## Disable logging
         self.env = tb.Environment(tmp_dir="/tmp/test_scenario", overwrite=True)
 
         ## Origins / Dests
@@ -12,6 +14,10 @@ class ScenarioTestCase(unittest.TestCase):
         ## Route Profile & Route Network
         self.walk_normal = self.env.RoutingProfile("./profiles/walk_normal.lua")
         self.route_network = self.env.OSMDataset("./data/ngwempisi.osm.pbf")
+
+        ## Default Scenario
+        self.scenario = self.env.Scenario(self.route_network, self.walk_normal, name="normal",
+                                          routed_args={"verbose": True})
 
     def ztest_scenario_run_MLD(self):
         ## Scenario
@@ -39,9 +45,7 @@ class ScenarioTestCase(unittest.TestCase):
         with self.scenario as scn:
             assert scn.api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
-    def test_scenario_nearest(self):
-        self.scenario = self.env.Scenario(self.route_network, self.walk_normal, name="normal")
-
+    def ztest_scenario_nearest(self):
         with self.scenario() as scn:
             nearest = scn.api.nearest((0,0), 3)
 
@@ -49,6 +53,13 @@ class ScenarioTestCase(unittest.TestCase):
             assert len(nearest) == 3, "Nearest did not return 3 points"
 
     def test_scenario_route(self):
+        waypoints = [self.origins.loc[0, 'geometry'], self.dests.loc[0, 'geometry']]
+
+        with self.scenario() as scn:
+            route = scn.api.route(waypoints)
+            print(route)
+
+            assert route is not None, "Error in ScenarioAPI.route"
         pass
 
 if __name__ == '__main__':

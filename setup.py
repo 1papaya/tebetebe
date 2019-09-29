@@ -16,11 +16,13 @@ setuptools.setup(
     include_package_data=True,
     license="MIT",
     install_requires=[
-        "osrm",
+        "osrm_api",
         "geojson",
         "geopandas",
         "overpass",
-        "sh"
+        "polyline",
+        "sh",
+        "shapely"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

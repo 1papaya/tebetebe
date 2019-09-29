@@ -1,3 +1,4 @@
+from polyline.codec import PolylineCodec
 from shapely.geometry import Point
 from . import Scenario
 from . import defaults
@@ -24,13 +25,14 @@ class OSRMAPI():
         self.profile = profile
         self.version = version
 
-    def nearest(self, coord, number=1, response="gdf", **kwargs):
+    def nearest(self, coord, response="raw", **kwargs):
         coord = self._coord_to_tuple(coord)
+        kwargs = self._serialize_params(kwargs)
 
         ## Send API Request
         try:
             api_resp = self.api.nearest(self.version, self.profile,
-                                        "{},{}".format(coord[0], coord[1]), number)
+                                        "{},{}".format(coord[0], coord[1]), **kwargs)
 
             ## Honor response type
             if response == "raw":
@@ -56,16 +58,48 @@ class OSRMAPI():
                 self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
                 return None
 
+    def route(self, coords, response="raw", **kwargs):
+        coords = [self._coord_to_tuple(coord) for coord in coords]
+        kwargs = self._serialize_params(kwargs)
+
+        ## Send req as polyline
+        try:
+            api_resp = self.api.route(self.version, self.profile,
+                                      ";".join(["{},{}".format(c[0], c[1]) for c in coords]), ## serialize
+                                      **kwargs)
+
+            if response == "raw":
+                return api_resp
+
+        except osrm_api.ApiException as exc:
+            ## Issue warning for OSRM HTTP API Error.
+            ## This can be further debugged by passing routed_args={"verbose":True} to Scenario
+            if exc.status == 400:
+                resp = json.loads(exc.body)
+
+                self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
+                return None
+
+    def _serialize_params(self, params):
+        """Serialize params with semicolons if necessary"""
+        semicolon_delimited = ["bearings", "radiuses", "hints", "sources", "destinations", "timestamps"]
+
+        for key, value in params.items():
+            if key in semicolon_delimited:
+                params[key] = ";".join(value)
+
+        return params
+
     def _coord_to_tuple(self, coord):
         '''Convert a coordinate of varying data types to a tuple'''
-        if isinstance(coord, Point):
+        if isinstance(coord, tuple):
+            return coord
+        elif isinstance(coord, Point):
             return (coord.x, coord.y)
         elif isinstance(coord, list):
             return (coord[0], coord[1])
         elif isinstance(coord, dict):
             return (coord["x"], coord["y"])
-        else:
-            return coord
 
     def _waypoint_to_dict(self, w):
         '''Convert a 'waypoint' OSRM response to dictionary with geometry'''

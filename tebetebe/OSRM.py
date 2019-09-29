@@ -120,7 +120,7 @@ class OSRM():
             if line.find("running and waiting for requests"):
                 ready_callback(process)
 
-            print(line)
+            print(line, end="")
 
         defaults = {"_bg": True, "_bg_exc": False,
                     "verbosity": "INFO", "ip": "127.0.0.1",
