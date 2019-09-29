@@ -8,7 +8,7 @@ import logging
 import json
 
 ## shapely: x = longitude; y = latitude
-## osrm:    lon, lat
+## osrm:    (lon, lat)
 
 class OSRMAPI():
     def __init__(self, url, version="v1", profile="skobuffs"):
@@ -25,12 +25,12 @@ class OSRMAPI():
         self.version = version
 
     def nearest(self, coord, number=1, response="gdf", **kwargs):
-        coord = self._coord_to_point(coord)
+        coord = self._coord_to_tuple(coord)
 
         ## Send API Request
         try:
             api_resp = self.api.nearest(self.version, self.profile,
-                                        "{},{}".format(coord.x, coord.y), number)
+                                        "{},{}".format(coord[0], coord[1]), number)
 
             ## Honor response type
             if response == "raw":
@@ -56,14 +56,14 @@ class OSRMAPI():
                 self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
                 return None
 
-    def _coord_to_point(self, coord):
-        '''Convert a coordinate of varying data types to a shapely Point'''
+    def _coord_to_tuple(self, coord):
+        '''Convert a coordinate of varying data types to a tuple'''
         if isinstance(coord, Point):
-            return coord
-        elif isinstance(coord, tuple) or isinstance(coord, list):
-            return Point(coord[0], coord[1])
+            return (coord.x, coord.y)
+        elif isinstance(coord, list):
+            return (coord[0], coord[1])
         elif isinstance(coord, dict):
-            return Point(coord["x"], coord["y"])
+            return (coord["x"], coord["y"])
         else:
             return coord
 
