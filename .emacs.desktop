@@ -1,0 +1,115 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Mon Mar 19 20:30:26 2018
+;; Desktop file format version 208
+;; Emacs version 25.3.50.2
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (23216 29250 846358 992000) (desktop . "208") "cub2p@platinum" nil nil ((((font-backend xft x) (font . "-DAMA-Ubuntu Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1") (font-parameter) (border-width . 0) (internal-border-width . 0) (right-divider-width . 0) (bottom-divider-width . 0) (vertical-scroll-bars . right) (horizontal-scroll-bars) (foreground-color . "white") (background-color . "black") (mouse-color . "black") (border-color . "black") (screen-gamma) (line-spacing) (left-fringe . 10) (right-fringe . 10) (scroll-bar-foreground) (scroll-bar-background) (menu-bar-lines . 0) (tool-bar-lines . 0) (title) (wait-for-wm . t) (tool-bar-position . top) (icon-type . t) (auto-raise) (auto-lower) (cursor-type . box) (scroll-bar-width . 13) (scroll-bar-height . 0) (alpha) (fullscreen . maximized) (display-type . color) (background-mode . dark) (cursor-color . "white") (sticky) (environment) (fullscreen-restore . maximized) (frameset--id . "E505-663E-8996-DD74") (frameset--mini t . t) (modeline . t) (minibuffer . t) (unsplittable) (icon-name) (display . ":0") (explicit-name) (visibility . t) (height . 44) (width . 160) (left . 50) (top . 25)) ((min-height . 4) (min-width . 21) (min-height-ignore . 2) (min-width-ignore . 20) (min-height-safe . 1) (min-width-safe . 4) (min-pixel-height . 64) (min-pixel-width . 168) (min-pixel-height-ignore . 32) (min-pixel-width-ignore . 160) (min-pixel-height-safe . 16) (min-pixel-width-safe . 32)) hc (pixel-width . 1316) (pixel-height . 701) (total-width . 164) (total-height . 44) (normal-height . 1.0) (normal-width . 1.0) (combination-limit) (leaf (pixel-width . 660) (pixel-height . 701) (total-width . 82) (total-height . 44) (normal-height . 1.0) (normal-width . 0.5) (buffer "0-preprocess-global.py" (selected . t) (hscroll . 0) (fringes 10 10 nil) (margins 2) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 418) (start . 1))) (leaf (last . t) (pixel-width . 656) (pixel-height . 701) (total-width . 82) (total-height . 44) (normal-height . 1.0) (normal-width . 0.5) (buffer "*Python*" (selected) (hscroll . 0) (fringes 10 10 nil) (margins 4) (scroll-bars nil 2 t nil 0 t) (vscroll . 0) (dedicated) (point . 61454) (start . 60398)))))])
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("p" "logger" "verbose" "self.log" "log" "log." "lo" "log" "la" "layer" "data_exts" "data_ext" "ss" "S" "shapely."))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("/home/cub2p/proj/b2p/tebetebe/tebetebe/TebetebeAnalysis.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/constants.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/TebetebeAnalysis.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/constants.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/__init__.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/DataFolder.py" "/home/cub2p/proj/b2p/tebetebe/bin/0-preprocess-global.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/DataFolder.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/OSMRegion.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/DataFolder.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/__init__.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/logger.py" "/home/cub2p/proj/b2p/tebetebe/bin/test.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/TebetebeAnalysis.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/__init__.py" "/home/cub2p/proj/b2p/tebetebe/bin/0-preprocess-global.py" "/home/cub2p/proj/b2p/tebetebe/0-preprocess-global.py" "/home/cub2p/proj/b2p/tebetebe/README.md" "/home/cub2p/proj/b2p/tebetebe/tebetebe/constants.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/DataFolder.py" "/home/cub2p/proj/b2p/tebetebe/tmp/test.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/OSMRegion.py" "/home/cub2p/proj/b2p/tebetebe/tebetebe/TebetebeAnalysis.py" "~/proj/b2p/tebetebe/"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/bin/0-preprocess-global.py"
+  "0-preprocess-global.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  418
+  '(90 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . utf-8-unix) (overwrite-mode) (truncate-lines . t))
+  '((mark-ring (413 299 240 24 107 107 130 130 131 107 80 130 130 131 130 417))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/DataFolder.py"
+  "DataFolder.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  497
+  '(199 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring (98 75 3900 780 839 302 537 386 582 386 537 537 582 2313 251 537))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/__init__.py"
+  "__init__.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  727
+  '(754 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring (754 164 50 52 754 164 25 754 50 754 754 24 754 754 754 727))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/TebetebeAnalysis.py"
+  "TebetebeAnalysis.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  259
+  '(208 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring (404 1067 117 805 805 874 805 52 745 52 52 421 421 52 52 259))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/constants.py"
+  "constants.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  875
+  '(1041 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . utf-8-unix) (truncate-lines . t))
+  '((mark-ring (995 1042 1041 876 876 876 876 876 876 95 55 578 682 578 117 854))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/OSMRegion.py"
+  "OSMRegion.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  299
+  '(249 nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring (240 300 8602 240 240 658 6855 1436 658 240 175 50 24 4690 1007 287))))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/tebetebe/logger.py"
+  "logger.py"
+  'python-mode
+  '(eldoc-mode auto-complete-mode elpy-mode company-mode highlight-indentation-mode yas-minor-mode linum-mode vi-tilde-fringe-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((indicate-empty-lines . t) (tab-width . 8) (indent-tabs-mode) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/cub2p/proj/b2p/tebetebe/README.md"
+  "README.md"
+  'markdown-mode
+  '(poly-markdown-mode linum-mode)
+  1161
+  '(63 nil)
+  nil
+  nil
+  '((tab-width . 4) (buffer-file-coding-system . undecided-unix) (truncate-lines . t))
+  '((mark-ring (14 61 68 68 3 1161 63 391 1161))))
+

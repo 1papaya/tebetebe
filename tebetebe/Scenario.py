@@ -15,6 +15,7 @@ from functools import partial
 from pathlib import Path
 
 from .RoutingProfile import RoutingProfile
+from .ScenarioAPI import ScenarioAPI
 from .OSMDataset import OSMDataset
 from .OSRM import OSRM
 from . import defaults
@@ -177,11 +178,10 @@ class Scenario():
             self()
 
         ## Point the osrm http api to correct port
-        port = utils.find_open_port()
-        self._set_config(port)
+        self.port = utils.find_open_port()
 
         self._set_command_args("routed", {
-            "port": port,
+            "port": self.port,
             "algorithm": self.algorithm,
             "dataset_name": self.name
         })
@@ -218,7 +218,7 @@ class Scenario():
 
         self.log.info("{}: Ready for requests".format(self.name))
 
-        return self
+        return ScenarioAPI(self)
 
     def __exit__(self, exc_type, exc_value, traceback):
         ## TODO handle common exceptions
@@ -234,25 +234,6 @@ class Scenario():
             self.process.kill()
         except:
             pass
-
-    ##
-    ## osrm-routed HTTP API
-
-    simple_route = osrm.simple_route
-    nearest = osrm.nearest
-    match = osrm.match
-    table = osrm.table
-    trip = osrm.trip
-
-    def _set_config(self, port):
-        """Set up HTTP API configuration given the HTTP server port"""
-        self.config = osrm.RequestConfig("127.0.0.1:{}/v1/skobuffs".format(port))
-
-        self.simple_route = partial(osrm.simple_route, url_config=self.config)
-        self.nearest = partial(osrm.nearest, url_config=self.config)
-        self.match = partial(osrm.match, url_config=self.config)
-        self.table = partial(osrm.table, url_config=self.config)
-        self.trip = partial(osrm.trip, url_config=self.config)
 
     ##
     ## Other

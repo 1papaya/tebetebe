@@ -4,3 +4,5 @@ docs/_build/
 examples/tmp
 dist/
 build/
+tmp/
+.emacs.desktop

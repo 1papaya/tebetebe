@@ -13,7 +13,7 @@ class ScenarioTestCase(unittest.TestCase):
         self.walk_normal = self.env.RoutingProfile("./profiles/walk_normal.lua")
         self.route_network = self.env.OSMDataset("./data/ngwempisi.osm.pbf")
 
-    def test_scenario_run_MLD(self):
+    def ztest_scenario_run_MLD(self):
         ## Scenario
         self.scenario = self.env.Scenario(self.route_network, self.walk_normal,
                                           algorithm="MLD", name="MLD")
@@ -23,11 +23,11 @@ class ScenarioTestCase(unittest.TestCase):
         assert self.scenario.path.is_file(), "Scenario not compiled"
 
         ## Test Scenario HTTP API
-        with self.scenario as scenario:
-            assert scenario.is_alive() == True, "Scenario not alive after context manager execution"
+        with self.scenario as api:
+            assert api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
 
-    def test_scenario_run_CH(self):
+    def ztest_scenario_run_CH(self):
         self.scenario = self.env.Scenario(self.route_network, self.walk_normal,
                                           algorithm="CH", name="CH")
 
@@ -36,9 +36,20 @@ class ScenarioTestCase(unittest.TestCase):
         assert self.scenario.path.is_file(), "Scenario not compiled"
 
         ## Test Scenario HTTP API
-        with self.scenario as scenario:
-            assert scenario.is_alive() == True, "Scenario not alive after context manager execution"
+        with self.scenario as api:
+            assert api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
+    def test_scenario_nearest(self):
+        self.scenario = self.env.Scenario(self.route_network, self.walk_normal, name="normal")
+
+        with self.scenario() as api:
+            nearest = api.nearest((0,0), 3)
+            
+            assert nearest is not None, "Error in ScenarioAPI.nearest"
+            assert len(nearest) == 3, "Nearest did not return 3 points"
+
+    def test_scenario_route(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
