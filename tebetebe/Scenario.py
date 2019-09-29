@@ -15,7 +15,7 @@ from functools import partial
 from pathlib import Path
 
 from .RoutingProfile import RoutingProfile
-from .ScenarioAPI import ScenarioAPI
+from .OSRMAPI import OSRMAPI
 from .OSMDataset import OSMDataset
 from .OSRM import OSRM
 from . import defaults
@@ -203,6 +203,7 @@ class Scenario():
 
 
             self.log.info("{}: Initializing scenario".format(self.name))
+            self.api = OSRMAPI("127.0.0.1:{}".format(self.port))
             self.process = self.OSRM.routed(self.path,
                                             ready_callback,
                                             done_callback,
@@ -214,11 +215,11 @@ class Scenario():
         ## Wait until OSRM-routed is ready before returning the api
         ## TODO better way to do this?
         while not self.ready:
-            time.sleep(1)
+            time.sleep(0.1)
 
         self.log.info("{}: Ready for requests".format(self.name))
 
-        return ScenarioAPI(self)
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         ## TODO handle common exceptions

@@ -23,8 +23,8 @@ class ScenarioTestCase(unittest.TestCase):
         assert self.scenario.path.is_file(), "Scenario not compiled"
 
         ## Test Scenario HTTP API
-        with self.scenario as api:
-            assert api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
+        with self.scenario as scn:
+            assert scn.api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
 
     def ztest_scenario_run_CH(self):
@@ -36,15 +36,15 @@ class ScenarioTestCase(unittest.TestCase):
         assert self.scenario.path.is_file(), "Scenario not compiled"
 
         ## Test Scenario HTTP API
-        with self.scenario as api:
-            assert api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
+        with self.scenario as scn:
+            assert scn.api.scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
     def test_scenario_nearest(self):
         self.scenario = self.env.Scenario(self.route_network, self.walk_normal, name="normal")
 
-        with self.scenario() as api:
-            nearest = api.nearest((0,0), 3)
-            
+        with self.scenario() as scn:
+            nearest = scn.api.nearest((0,0), 3)
+
             assert nearest is not None, "Error in ScenarioAPI.nearest"
             assert len(nearest) == 3, "Nearest did not return 3 points"
 

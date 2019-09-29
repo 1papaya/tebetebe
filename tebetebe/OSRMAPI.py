@@ -10,20 +10,19 @@ import json
 ## shapely: x = longitude; y = latitude
 ## osrm:    lon, lat
 
-class ScenarioAPI():
-    def __init__(self, scenario):
+class OSRMAPI():
+    def __init__(self, url, version="v1", profile="skobuffs"):
         self.log = logging.getLogger(defaults.LOGGER)
-        self.scenario = scenario
 
         ## Scenario API path settings
-        self.url = "http://127.0.0.1:{}".format(self.scenario.port)
+        self.url = url
         self.api_config = osrm_api.Configuration(host=self.url)
         self.api_client = osrm_api.ApiClient(configuration=self.api_config)
         self.api = osrm_api.OSRMApi(self.api_client)
 
-        ## API Path Requests defaults
-        self.profile = "skobuffs" ## this is currently not recognized by OSRM API
-        self.version = "v1"
+        ## API Path Requests defaults. Currently not recognized by OSRM API
+        self.profile = profile
+        self.version = version
 
     def nearest(self, coord, number=1, response="gdf", **kwargs):
         coord = self._coord_to_point(coord)
