@@ -3,41 +3,42 @@ import unittest
 
 class ScenarioTestCase(unittest.TestCase):
     def setUp(self):
-        self.env = tb.Environment(tmp_dir="/tmp/test_scenario", overwrite=True, verbose=False)
+        self.env = tb.Environment(tmp_dir="/tmp/test_scenario", overwrite=True)
 
         ## Origins / Dests
         self.origins = self.env.POIDataset.from_file("./data/ngwempisi_homesteads.geojson")
         self.dests = self.env.POIDataset.from_file("./data/ngwempisi_schools.geojson")
 
-        ## Route Profiles
+        ## Route Profile & Route Network
         self.walk_normal = self.env.RoutingProfile("./profiles/walk_normal.lua")
-        self.walk_flood = self.env.RoutingProfile("./profiles/walk_flood.lua")
-
-        ## Route Network
         self.route_network = self.env.OSMDataset("./data/ngwempisi.osm.pbf")
 
-        ## Scenarios
-        self.s_normal = self.env.Scenario(self.route_network, self.walk_normal,
-                                          name="normal")
-        self.s_flood = self.env.Scenario(self.route_network, self.walk_flood,
-                                         name="flood")
+    def test_scenario_run_MLD(self):
+        ## Scenario
+        self.scenario = self.env.Scenario(self.route_network, self.walk_normal,
+                                          algorithm="MLD", name="MLD")
 
-        ## Delete scenarios so recompiled for each test
-        for scenario in [self.s_normal, self.s_flood]:
-            if scenario.path.is_file():
-                scenario.path.unlink()
+        ## Test Compilation
+        self.scenario()
+        assert self.scenario.path.is_file(), "Scenario not compiled"
 
-    def test_scenario_compile(self):
-        tst_scenario = self.s_normal
+        ## Test Scenario HTTP API
+        with self.scenario as scenario:
+            assert scenario.is_alive() == True, "Scenario not alive after context manager execution"
 
-        tst_scenario()
-        assert tst_scenario.path.is_file() == True, "Scenario file does not exist"
 
-    def test_scenario_run(self):
-        tst_scenario = self.s_normal
+    def test_scenario_run_CH(self):
+        self.scenario = self.env.Scenario(self.route_network, self.walk_normal,
+                                          algorithm="CH", name="CH")
 
-        with tst_scenario() as scn:
-            assert scn.process.process.is_alive() == True, "Scenario not alive after context manager execution"
+        ## Test Compilation
+        self.scenario()
+        assert self.scenario.path.is_file(), "Scenario not compiled"
+
+        ## Test Scenario HTTP API
+        with self.scenario as scenario:
+            assert scenario.is_alive() == True, "Scenario not alive after context manager execution"
+
 
 if __name__ == '__main__':
     unittest.main()
