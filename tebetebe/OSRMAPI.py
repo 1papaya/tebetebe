@@ -1,38 +1,35 @@
-from polyline.codec import PolylineCodec
 from shapely.geometry import Point
 from . import Scenario
 from . import defaults
 
 import geopandas as gpd
 import osrm_api
+import polyline
 import logging
 import json
 
-## shapely: x = longitude; y = latitude
-## osrm:    (lon, lat)
+## TODO more response=* for nearest, route, ...
 
 class OSRMAPI():
-    def __init__(self, url, version="v1", profile="skobuffs"):
+    def __init__(self, host, version="v1", profile="skobuffs"):
         self.log = logging.getLogger(defaults.LOGGER)
 
-        ## Scenario API path settings
-        self.url = url
-        self.api_config = osrm_api.Configuration(host=self.url)
-        self.api_client = osrm_api.ApiClient(configuration=self.api_config)
-        self.api = osrm_api.OSRMApi(self.api_client)
+        ## Initialize osrm-openapi as "sub-api"
+        self.host = host
+        self.api = self._get_api_for_host(self.host)
 
-        ## API Path Requests defaults. Currently not recognized by OSRM API
+        ## API Path Requests constants. Currently different versions/profiles are not supported
         self.profile = profile
         self.version = version
 
-    def nearest(self, coord, response="raw", **kwargs):
+    def nearest(self, coord, number=1, response="raw", **kwargs):
         coord = self._coord_to_tuple(coord)
         kwargs = self._serialize_params(kwargs)
 
         ## Send API Request
         try:
             api_resp = self.api.nearest(self.version, self.profile,
-                                        "{},{}".format(coord[0], coord[1]), **kwargs)
+                                        "{},{}".format(coord[0], coord[1]), number, **kwargs)
 
             ## Honor response type
             if response == "raw":
@@ -50,43 +47,62 @@ class OSRMAPI():
                     return gpd.GeoDataFrame(w_list)
 
         except osrm_api.ApiException as exc:
-            ## Issue warning for OSRM HTTP API Error.
-            ## This can be further debugged by passing routed_args={"verbose":True} to Scenario
-            if exc.status == 400:
-                resp = json.loads(exc.body)
-
-                self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
-                return None
+            self._handle_osrm_error(exc)
+            return None
 
     def route(self, coords, response="raw", **kwargs):
         coords = [self._coord_to_tuple(coord) for coord in coords]
         kwargs = self._serialize_params(kwargs)
 
-        ## Send req as polyline
         try:
             api_resp = self.api.route(self.version, self.profile,
-                                      ";".join(["{},{}".format(c[0], c[1]) for c in coords]), ## serialize
-                                      **kwargs)
+                                      self._polyline(coords), **kwargs)
 
             if response == "raw":
                 return api_resp
 
         except osrm_api.ApiException as exc:
-            ## Issue warning for OSRM HTTP API Error.
-            ## This can be further debugged by passing routed_args={"verbose":True} to Scenario
-            if exc.status == 400:
-                resp = json.loads(exc.body)
+            self._handle_osrm_error(exc)
+            return None
 
-                self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
-                return None
+    def is_alive(self):
+        """Send a lil' request to OSRM server to see if it responds"""
+        try:
+            resp = self.nearest((0,0))
+            return True
+        except Exception as exc:
+            return False
+
+    def _get_api_for_host(self, host):
+        """Return osrm-openapi API for a host"""
+        api = osrm_api.OSRMApi()
+        api.api_client.configuration.host = host
+
+        return api
+
+    def _polyline(self, coords):
+        """Turn coordinates into polyline in format OSRM accepts"""
+        ## geojson=True to use pairs as lat, lon tuples
+        return "polyline({})".format(polyline.encode(coords, geojson=True))
+
+    def _handle_osrm_error(self, exc):
+        ## Issue warning for OSRM HTTP API Error.
+        ## This can be further debugged by passing routed_args={"verbose":True} to Scenario
+        if exc.status == 400:
+            resp = json.loads(exc.body)
+            self.log.warning("HTTP 400: {}: {}".format(resp["code"], resp["message"]))
 
     def _serialize_params(self, params):
         """Serialize params with semicolons if necessary"""
         semicolon_delimited = ["bearings", "radiuses", "hints", "sources", "destinations", "timestamps"]
 
         for key, value in params.items():
+            ## Semicolon delimited parameters
             if key in semicolon_delimited:
                 params[key] = ";".join(value)
+            ## Make boolean parameters lowercase
+            elif isinstance(value, bool):
+                params[key] = str(value).lower()
 
         return params
 
