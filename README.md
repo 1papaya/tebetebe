@@ -1,6 +1,6 @@
 ## tebetebe: python routing analysis with OSRM
 
-[tebetebe](https://github.com/1papaya/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data, and provides various classes to perform routing analysis using these networks.
+[tebetebe](https://github.com/geoDavey/tebetebe) is a Python API to compile, serve, and query routable networks using the [Open Source Routing Machine](https://project-osrm.org) (OSRM) and [OpenStreetMap](https://openstreetmap.org) data, and provides various classes to perform routing analysis using these networks.
 
 *tebetebe* abstracts OSRM executables into a pythonic API, making it easy to generate a custom routing "Scenario" and develop reproducible, readable routing analysis.
 
@@ -20,18 +20,18 @@
 3. (option 2) **Clone tebetebe source code and install**
 
    ```shell
-     git clone https://github.com/1papaya/tebetebe.git
+     git clone https://github.com/geoDavey/tebetebe.git
      python3 setup.py install
    ```
    
 ### Documentation
 
-* [Examples](https://1papaya.github.io/tebetebe/#examples)
-* [API Documentation](https://1papaya.github.io/tebetebe/#api-documentation)
+* [Examples](https://geoDavey.github.io/tebetebe/#examples)
+* [API Documentation](https://geoDavey.github.io/tebetebe/#api-documentation)
    
 ### Simple Scenario Example
 
-Calculate the route from Mbabane to Simunye using the default walking scenario. Check out the [Documentation](https://1papaya.github.io/tebetebe) for more examples!
+Calculate the route from Mbabane to Simunye using the default walking scenario. Check out the [Documentation](https://geoDavey.github.io/tebetebe) for more examples!
 
 ```python
 import tebetebe as tb
